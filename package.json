@@ -1,0 +1,18 @@
+{
+  "name": "create-voltage-app",
+  "version": "1.0.0",
+  "description": "Command line tool to bootstrap a new app that connects to your Voltage node",
+  "scripts": {
+    "dev": "npx nodemon src/index.js"
+  },
+  "bin": {
+    "test-create-app": "./src/index.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@inquirer/prompts": "^4.3.0",
+    "axios": "^1.6.7",
+    "chalk": "^4.1.2",
+    "crypto-js": "^4.1.1"
+  }
+}
