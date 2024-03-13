@@ -27,11 +27,9 @@ async function run() {
     // Prompt for email + password
     const email = await input({
       message: "Email:",
-      default: "joao.mesquita@voltage.cloud",
     });
     const pwd = await password({
       message: "Password:",
-      // default: "mornaj-xoFvyp-6ximxu",
     });
     // Login
     await api.login({ email, password: pwd });
