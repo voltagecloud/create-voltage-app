@@ -71,4 +71,5 @@ function decryptMacaroon(macaroon, password, decryptAsHex = false) {
 
 module.exports = {
   decryptMacaroon,
+  base64ToHex,
 };
