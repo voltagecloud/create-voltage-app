@@ -11,9 +11,6 @@ async function initSvelteKit(opts) {
   const source = `${ROOT_DIR}/apps/voltage-svelte-ts-app`;
   const destination = `${process.cwd()}/${opts.name}`;
   await copyDirectory(source, destination);
-  // copyDirectory also just copies files
-  // we need to copy the .env.example to .env because npm publish won't include .env files
-  await copyDirectory(`${destination}/.env.example`, `${destination}/.env`);
 
   // Replace .env values
   replaceEnvValue(
@@ -21,7 +18,6 @@ async function initSvelteKit(opts) {
     "VITE_ADMIN_MACAROON",
     opts.adminMacaroon
   );
-  replaceEnvValue(`${destination}/.env`, "VITE_TLS_CERT", opts.tlsCert);
   replaceEnvValue(`${destination}/.env`, "VITE_API_ENDPOINT", opts.apiEndpoint);
 
   console.log(chalk.blue("Installing dependencies..."));

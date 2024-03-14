@@ -65,8 +65,8 @@ Make sure you have a voltage account, team and node setup. You can signup for fr
       (await password({
         message: "Node password:",
       }));
-    // Get admin macaroon and tls cert
-    const { adminMacaroon, tlsCert } = await api.getAdminMacaroonAndTlsCert(
+    // Get admin macaroon
+    const { adminMacaroon } = await api.getAdminMacaroonAndTlsCert(
       teamId,
       nodeId
     );
@@ -87,7 +87,6 @@ Make sure you have a voltage account, team and node setup. You can signup for fr
     await appInit({
       name: appName,
       apiEndpoint: `https://${nodeDetails.api_endpoint}:8080`,
-      tlsCert,
       adminMacaroon: base64ToHex(decryptedMacaroon),
     });
   } catch (e) {

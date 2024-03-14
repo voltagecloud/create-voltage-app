@@ -1,7 +1,7 @@
 {
   "name": "create-voltage-app",
-  "version": "1.0.7",
-  "description": "Command line tool to bootstrap a new app that connects to your Voltage node",
+  "version": "1.0.8",
+  "description": "This tool will help you get started with creating lightning powered apps that connect to your voltage node.  Make sure you have a voltage account, team and node setup. You can signup for free at https://app.voltage.cloud.",
   "scripts": {
     "dev": "npx nodemon src/index.js"
   },
