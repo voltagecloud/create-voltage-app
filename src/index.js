@@ -7,14 +7,6 @@ const { getPackageJsonVersion } = require("./utils/fs");
 const select = require("@inquirer/select").default;
 const chalk = require("chalk");
 
-const log = console.log;
-const logger = {
-  successLog: (str) => log(chalk.green(`✔️ ${str}`)),
-  primaryLog: (str) => log(chalk.hex("#FFA500")(`⚡️${str}`)),
-  infoLog: (str) => log(chalk.yellow(str)),
-  titleLog: (str) => log(chalk.bold.hex("#FFA500")(str)),
-};
-
 async function run() {
   const packageVersion = await getPackageJsonVersion();
   // prettier-ignore
@@ -29,8 +21,8 @@ Make sure you have a voltage account, team and node setup. You can signup for fr
   );
   try {
     // VoltageApi instance
-    const api = new VoltageApi({ logger });
-    // Prompt for email + password
+    const api = new VoltageApi({});
+    // Prompt for email and password
     const email =
       process.env.VOLTAGE_EMAIL ||
       (await input({
@@ -97,7 +89,6 @@ Make sure you have a voltage account, team and node setup. You can signup for fr
       apiEndpoint: `https://${nodeDetails.api_endpoint}:8080`,
       tlsCert,
       adminMacaroon: base64ToHex(decryptedMacaroon),
-      logger,
     });
   } catch (e) {
     process.exit(1);

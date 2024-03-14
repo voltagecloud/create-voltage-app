@@ -1,4 +1,5 @@
 const axios = require("axios");
+const chalk = require("chalk");
 
 // TODO: Local + production graphql?
 const LOCAL_URL = "https://localhost:3210";
@@ -10,11 +11,10 @@ const GRAPHQL_STAGING_URL = "https://graphql.staging.voltage.cloud/";
 
 class Api {
   constructor(opts) {
-    this.accessToken = opts.accessToken;
-    this.logger = opts.logger;
-    this.baseApiUrl = opts.apiUrl || API_URL;
-    this.baseAppUrl = opts.appUrl || APP_URL;
-    this.baseGraphqlApiUrl = opts.graphqlApiUrl || GRAPHQL_STAGING_URL;
+    this.accessToken = opts?.accessToken;
+    this.baseApiUrl = opts?.apiUrl || API_URL;
+    this.baseAppUrl = opts?.appUrl || APP_URL;
+    this.baseGraphqlApiUrl = opts?.graphqlApiUrl || GRAPHQL_STAGING_URL;
     this.teams = [];
   }
 
@@ -84,7 +84,7 @@ class Api {
       },
     });
     this.accessToken = response.accessToken;
-    this.logger.successLog("️Login successful!");
+    console.log(chalk.green("️Login successful!"));
   }
 
   async getTeams() {

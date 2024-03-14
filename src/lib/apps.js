@@ -3,8 +3,8 @@ const {
   copyDirectory,
   replaceEnvValue,
 } = require("../utils/fs");
-const { exec } = require("child_process");
-
+const { execSync } = require("child_process");
+const chalk = require("chalk");
 const ROOT_DIR = getRootDirectory();
 
 async function initSvelteKit(opts) {
@@ -21,52 +21,19 @@ async function initSvelteKit(opts) {
   replaceEnvValue(`${destination}/.env`, "VITE_TLS_CERT", opts.tlsCert);
   replaceEnvValue(`${destination}/.env`, "VITE_API_ENDPOINT", opts.apiEndpoint);
 
-  opts.logger.primaryLog("Installing dependencies...");
-  exec("npm install", { cwd: destination }, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`exec error: ${error}`);
-      return;
-    }
-    console.log(`stdout: ${stdout}`);
-    console.error(`stderr: ${stderr}`);
-  });
-  opts.logger.primaryLog("Finished");
-  opts.logger.primaryLog("Finished");
-  // const devProcess = exec("npm run dev", { cwd: destination });
+  console.log(chalk.blue("Installing dependencies..."));
+  execSync("npm install", { cwd: destination });
+  console.log(chalk.green("Done!"));
+  // prettier-ignore
+  console.log(`
+${chalk.gray("Your app is ready! Copy and paste the following to your terminal:")}
 
-  // devProcess.stdout.on("data", (data) => {
-  //   console.log(`stdout: ${data}`);
-  // });
+${`cd ${destination};`}
+${`npm run dev -- --open;`}
 
-  // devProcess.stderr.on("data", (data) => {
-  //   console.error(`stderr: ${data}`);
-  // });
+${chalk.gray(`Your browser should automatically open the app at ${chalk.underline("https://localhost:3000")}`)}
 
-  // devProcess.on("error", (error) => {
-  //   console.error(`Error executing command: ${error}`);
-  // });
-
-  // devProcess.on("close", (code) => {
-  //   console.log(`Child process exited with code ${code}`);
-  // });
-
-  // const openProcess = exec("open http://localhost:3000", { cwd: destination });
-
-  // openProcess.stdout.on("data", (data) => {
-  //   console.log(`stdout: ${data}`);
-  // });
-
-  // openProcess.stderr.on("data", (data) => {
-  //   console.error(`stderr: ${data}`);
-  // });
-
-  // openProcess.on("error", (error) => {
-  //   console.error(`Error executing command: ${error}`);
-  // });
-
-  // openProcess.on("close", (code) => {
-  //   console.log(`Child process exited with code ${code}`);
-  // });
+${chalk.hex("#FFA500")(`⚡️Happy hacking!`)}`)
 }
 
 const apps = [
