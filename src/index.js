@@ -91,6 +91,7 @@ Make sure you have a voltage account, team and node setup. You can signup for fr
       adminMacaroon: base64ToHex(decryptedMacaroon),
     });
   } catch (e) {
+    console.log(e.message);
     process.exit(1);
   }
 }

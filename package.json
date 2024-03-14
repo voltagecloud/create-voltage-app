@@ -1,6 +1,6 @@
 {
   "name": "create-voltage-app",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Command line tool to bootstrap a new app that connects to your Voltage node",
   "scripts": {
     "dev": "npx nodemon src/index.js"
