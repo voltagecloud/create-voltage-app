@@ -10,6 +10,7 @@ const ROOT_DIR = getRootDirectory();
 async function initSvelteKit(opts) {
   const source = `${ROOT_DIR}/apps/voltage-svelte-ts-app`;
   const destination = `${process.cwd()}/${opts.name}`;
+  console.log({ source, destination });
   await copyDirectory(source, destination);
 
   // Replace .env values
