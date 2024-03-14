@@ -10,8 +10,10 @@ const ROOT_DIR = getRootDirectory();
 async function initSvelteKit(opts) {
   const source = `${ROOT_DIR}/apps/voltage-svelte-ts-app`;
   const destination = `${process.cwd()}/${opts.name}`;
-  console.log({ source, destination });
   await copyDirectory(source, destination);
+  // copyDirectory also just copies files
+  // we need to copy the .env.example to .env because npm publish won't include .env files
+  await copyDirectory(`${destination}/.env.example`, `${destination}/.env`);
 
   // Replace .env values
   replaceEnvValue(

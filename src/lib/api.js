@@ -19,51 +19,31 @@ class Api {
   }
 
   async authedGet(url) {
-    try {
-      const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${this.accessToken}`,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Error: ", error.message);
-      throw error;
-    }
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${this.accessToken}`,
+      },
+    });
+    return response.data;
   }
 
   async authedPost(url, data) {
-    try {
-      const response = await axios.post(url, data, {
-        headers: {
-          Authorization: `Bearer ${this.accessToken}`,
-        },
-      });
-      return response.data;
-    } catch (error) {
-      console.error("Error: ", error.message);
-      throw error;
-    }
+    const response = await axios.post(url, data, {
+      headers: {
+        Authorization: `Bearer ${this.accessToken}`,
+      },
+    });
+    return response.data;
   }
 
   async post({ url, data }) {
-    try {
-      const response = await axios.post(url, data);
-      return response.data;
-    } catch (error) {
-      console.error("Error: ", error.message);
-      throw error;
-    }
+    const response = await axios.post(url, data);
+    return response.data;
   }
 
   async get(url) {
-    try {
-      const response = await axios.get(url);
-      return response.data;
-    } catch (error) {
-      console.error("Error: ", error.message);
-      throw error;
-    }
+    const response = await axios.get(url);
+    return response.data;
   }
 
   makeAppUrl(path) {

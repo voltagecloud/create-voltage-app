@@ -16,17 +16,7 @@ function getRootDirectory() {
 }
 
 async function copyDirectory(source, destination) {
-  try {
-    await fs.copy(source, destination, {
-      // Pass options to include or exclude specific files or directories
-      filter: () => {
-        // Include all files and directories, including .env files
-        return true;
-      },
-    });
-  } catch (err) {
-    console.error("Error copying directory:", err);
-  }
+  await fs.copy(source, destination);
 }
 
 function replaceEnvValue(filePath, key, newValue) {
