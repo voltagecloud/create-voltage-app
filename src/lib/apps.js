@@ -3,6 +3,7 @@ const {
   copyDirectory,
   replaceEnvValue,
 } = require("../utils/fs");
+const { exec } = require("child_process");
 
 const ROOT_DIR = getRootDirectory();
 
@@ -19,20 +20,18 @@ async function initSvelteKit(opts) {
   );
   replaceEnvValue(`${destination}/.env`, "VITE_TLS_CERT", opts.tlsCert);
   replaceEnvValue(`${destination}/.env`, "VITE_API_ENDPOINT", opts.apiEndpoint);
-  // Copy values to the .env file
 
-  // --- Install, run and open the app...
-  // const { exec } = require("child_process");
-
-  // TODO: TEST THIS
-  // exec("npm install", (error, stdout, stderr) => {
-  //   if (error) {
-  //     console.error(`exec error: ${error}`);
-  //     return;
-  //   }
-  //   console.log(`stdout: ${stdout}`);
-  //   console.error(`stderr: ${stderr}`);
-  // });
+  opts.logger.primaryLog("Installing dependencies...");
+  exec("npm install", { cwd: destination }, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+    console.error(`stderr: ${stderr}`);
+  });
+  opts.logger.primaryLog("Finished");
+  opts.logger.primaryLog("Finished");
   // const devProcess = exec("npm run dev", { cwd: destination });
 
   // devProcess.stdout.on("data", (data) => {

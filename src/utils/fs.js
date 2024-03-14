@@ -35,8 +35,16 @@ function replaceEnvValue(filePath, key, newValue) {
   fs.writeFileSync(filePath, modifiedContent, "utf8");
 }
 
+async function getPackageJsonVersion() {
+  const dir = getRootDirectory();
+  const data = fs.readFileSync(`${dir}/package.json`, "utf8");
+  const packageJson = JSON.parse(data);
+  return packageJson.version;
+}
+
 module.exports = {
   getRootDirectory,
   copyDirectory,
   replaceEnvValue,
+  getPackageJsonVersion,
 };

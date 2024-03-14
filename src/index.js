@@ -3,6 +3,7 @@ const VoltageApi = require("./lib/api");
 const apps = require("./lib/apps");
 const { decryptMacaroon, base64ToHex } = require("./utils/crypto");
 const { input, password } = require("@inquirer/prompts");
+const { getPackageJsonVersion } = require("./utils/fs");
 const select = require("@inquirer/select").default;
 const chalk = require("chalk");
 
@@ -10,18 +11,22 @@ const log = console.log;
 const logger = {
   successLog: (str) => log(chalk.green(`✔️ ${str}`)),
   primaryLog: (str) => log(chalk.hex("#FFA500")(`⚡️${str}`)),
+  infoLog: (str) => log(chalk.yellow(str)),
+  titleLog: (str) => log(chalk.bold.hex("#FFA500")(str)),
 };
 
-function truncateStringInMiddle(str, num = 6) {
-  if (str.length <= num) {
-    return str;
-  }
-  const start = str.slice(0, num);
-  const end = str.slice(str.length - num);
-  return `${start}...${end}`;
-}
-
 async function run() {
+  const packageVersion = await getPackageJsonVersion();
+  // prettier-ignore
+  console.log(`
+${chalk.hex("#FFA500")(`Welcome to create-voltage-app!`)} ${chalk.green(`(version: ${packageVersion})`)}
+`);
+  // prettier-ignore
+  console.log(
+    chalk.gray(`This tool will help you get started with creating lightning powered apps that connect to your voltage node.
+Make sure you have a voltage account, team and node setup. You can signup for free at ${chalk.underline('https://app.voltage.cloud')}.
+    `)
+  );
   try {
     // VoltageApi instance
     const api = new VoltageApi({ logger });
@@ -68,8 +73,6 @@ async function run() {
       (await password({
         message: "Node password:",
       }));
-    logger.primaryLog(`LND Version: ${nodeDetails.lnd_version}`);
-    logger.primaryLog(`API Endpoint: ${nodeDetails.api_endpoint}`);
     // Get admin macaroon and tls cert
     const { adminMacaroon, tlsCert } = await api.getAdminMacaroonAndTlsCert(
       teamId,
@@ -77,10 +80,6 @@ async function run() {
     );
     // Decrypt admin macaroon
     const decryptedMacaroon = decryptMacaroon(adminMacaroon, nodePassword);
-    logger.primaryLog(`TLS Cert: ${truncateStringInMiddle(tlsCert)}`);
-    logger.primaryLog(
-      `Admin Macaroon: ${truncateStringInMiddle(decryptedMacaroon)}`
-    );
     // Choose type of app
     const appInit = await select({
       message: "Select a type of application:",
