@@ -1,5 +1,19 @@
 <script lang="ts">
-  import { lndGetWalletBalance, lndGetInfo, lndListChannels } from "$lib/lnd";
+  import {
+    lndGetWalletBalance,
+    lndGetInfo,
+    lndListChannels,
+    lndListInvoices,
+    lndCreateInvoice,
+  } from "$lib/lnd";
+
+  let amount = 0;
+  let memo = "";
+  let invoice = null;
+
+  const createInvoice = async () => {
+    invoice = await lndCreateInvoice(amount, memo);
+  };
 </script>
 
 <h1>Welcome to your Voltage Application</h1>
@@ -45,3 +59,37 @@
 {:catch error}
   <p>error: {error.message}</p>
 {/await}
+
+<h2>Channel Info</h2>
+{#await lndListChannels()}
+  <p>loading...</p>
+{:then result}
+  <ul>
+    <li>Number of channels: {result.channels.length}</li>
+  </ul>
+{:catch error}
+  <p>error: {error.message}</p>
+{/await}
+
+<h2>Invoices</h2>
+{#await lndListInvoices()}
+  <p>leading...</p>
+{:then result}
+  <ul>
+    <!-- catch a dispatched created invoice -->
+
+    {#each result.invoices as invoice}
+      <li>{invoice.add_index} - {invoice.state} {invoice.payment_request}</li>
+    {/each}
+  </ul>
+{/await}
+
+<h2>Create Invoice</h2>
+<!-- Make a simple form to call the lndCreateInvoices function with the amount and memo -->
+<form on:submit|preventDefault={createInvoice}>
+  <label for="amount">Amount</label>
+  <input type="number" id="amount" bind:value={amount} />
+  <label for="memo">Memo</label>
+  <input type="text" id="memo" bind:value={memo} />
+  <button type="submit">Create Invoice</button>
+</form>

@@ -94,3 +94,38 @@ export type WalletBalanceResponse = {
   reserved_balance_anchor_chan: string;
   account_balance: unknown;
 };
+
+export type CreateInvoiceResponse = {
+  r_hash: string;
+  payment_request: string;
+  add_index: string;
+};
+
+export type ListInvoicesResponse = {
+  invoices: Invoice[];
+};
+
+export type Invoice = {
+  memo: string;
+  receipt: string;
+  r_preimage: string;
+  r_hash: string;
+  value: string;
+  settled: boolean;
+  creation_date: string;
+  settle_date: string;
+  payment_request: string;
+  description_hash: string;
+  expiry: string;
+  fallback_addr: string;
+  cltv_expiry: string;
+  route_hints: string[];
+  private: boolean;
+  add_index: string;
+  settle_index: string;
+  amt_paid: string;
+  amt_paid_sat: string;
+  amt_paid_msat: string;
+  state: string;
+  htlcs: HTLC[];
+};
