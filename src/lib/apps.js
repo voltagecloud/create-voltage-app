@@ -3,6 +3,7 @@ const {
   copyDirectory,
   replaceEnvValue,
 } = require("../utils/fs");
+const fs = require("fs");
 const { execSync } = require("child_process");
 const chalk = require("chalk");
 const ROOT_DIR = getRootDirectory();
@@ -11,15 +12,11 @@ async function initSvelteKit(opts) {
   const source = `${ROOT_DIR}/apps/voltage-svelte-ts-app`;
   const destination = `${process.cwd()}/${opts.name}`;
   await copyDirectory(source, destination);
-
-  // Replace .env values
-  replaceEnvValue(
-    `${destination}/.env`,
-    "VITE_ADMIN_MACAROON",
-    opts.adminMacaroon
-  );
-  replaceEnvValue(`${destination}/.env`, "VITE_API_ENDPOINT", opts.apiEndpoint);
-
+  const exampleEnvPath = `${source}/.env.example`;
+  const envPath = `${destination}/.env`;
+  fs.copyFileSync(exampleEnvPath, envPath);
+  replaceEnvValue(envPath, "VITE_ADMIN_MACAROON", opts.adminMacaroon);
+  replaceEnvValue(envPath, "VITE_API_ENDPOINT", opts.apiEndpoint);
   console.log(chalk.blue("Installing dependencies..."));
   execSync("npm install", { cwd: destination });
   console.log(chalk.green("Done!"));
