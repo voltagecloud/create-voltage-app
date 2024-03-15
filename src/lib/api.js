@@ -1,20 +1,16 @@
 const axios = require("axios");
 const chalk = require("chalk");
 
-// TODO: Local + production graphql?
-const LOCAL_URL = "https://localhost:3210";
-const PRODUCTION_URL = "https://app.voltage.cloud";
-
-const API_URL = "https://ugak8gc6dk.execute-api.us-west-2.amazonaws.com";
-const APP_URL = "https://nextgen.staging.voltage.cloud";
-const GRAPHQL_STAGING_URL = "https://graphql.staging.voltage.cloud/";
+const API_URL = "https://frontend-api.voltage.cloud";
+const APP_URL = "https://app.voltage.cloud";
+const GRAPHQL_URL = "https://graphql.voltage.cloud/";
 
 class Api {
   constructor(opts) {
     this.accessToken = opts?.accessToken;
-    this.baseApiUrl = opts?.apiUrl || API_URL;
-    this.baseAppUrl = opts?.appUrl || APP_URL;
-    this.baseGraphqlApiUrl = opts?.graphqlApiUrl || GRAPHQL_STAGING_URL;
+    this.baseApiUrl = process.env.VOLTAGE_API_URL || API_URL;
+    this.baseAppUrl = process.env.VOLTAGE_APP_URL || APP_URL;
+    this.baseGraphqlApiUrl = process.env.VOLTAGE_GRAPHQL_URL || GRAPHQL_URL;
     this.teams = [];
   }
 
