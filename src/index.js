@@ -34,7 +34,13 @@ Make sure you have a voltage account, team and node setup. You can signup for fr
         message: "Password:",
       }));
     // Login
-    await api.login({ email, password: pwd });
+    const result = await api.login({ email, password: pwd });
+    if (result.token) {
+      const mfaCode = await input({
+        message: "Authenticator code:",
+      });
+      await api.mfaLogin({ code: mfaCode, token: result.token, email });
+    }
     // Get teams
     await api.getTeams();
     // Promp which team to use

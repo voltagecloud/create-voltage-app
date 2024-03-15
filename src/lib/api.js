@@ -63,7 +63,26 @@ class Api {
         password: opts.password,
       },
     });
-    this.accessToken = response.accessToken;
+    if (response.token) {
+      // MFA
+      return { mfa: true, token: response.token };
+    } else {
+      this.accessToken = response.accessToken;
+      console.log(chalk.green("️Login successful!"));
+    }
+  }
+
+  async mfaLogin(opts) {
+    const url = this.makeAppUrl("/api/auth/loginmfa");
+    const response = await this.post({
+      url,
+      data: {
+        email: opts.email,
+        code: opts.code,
+        token: opts.token,
+      },
+    });
+    this.accessToken = response.auth.accessToken;
     console.log(chalk.green("️Login successful!"));
   }
 
