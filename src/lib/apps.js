@@ -4,40 +4,24 @@ const {
   replaceEnvValue,
 } = require("../utils/fs");
 const fs = require("fs");
-const { execSync } = require("child_process");
-const chalk = require("chalk");
 const ROOT_DIR = getRootDirectory();
 
-async function initSvelteKit(opts) {
-  const source = `${ROOT_DIR}/apps/voltage-svelte-ts-app`;
-  const destination = `${process.cwd()}/${opts.name}`;
-  await copyDirectory(source, destination);
-  const exampleEnvPath = `${source}/.env.example`;
-  const envPath = `${destination}/.env`;
-  fs.copyFileSync(exampleEnvPath, envPath);
-  replaceEnvValue(envPath, "VITE_ADMIN_MACAROON", opts.adminMacaroon);
-  replaceEnvValue(envPath, "VITE_API_ENDPOINT", opts.apiEndpoint);
-  console.log(chalk.blue("Installing dependencies..."));
-  execSync("npm install", { cwd: destination });
-  console.log(chalk.green("Done!"));
-  // prettier-ignore
-  console.log(`
-${chalk.gray("Your app is ready! Copy and paste the following to your terminal:")}
-
-${`cd ${destination};`}
-${`npm run dev -- --open;`}
-
-${chalk.gray(`Your browser should automatically open the app at ${chalk.underline("https://localhost:3000")}`)}
-
-${chalk.hex("#FFA500")(`⚡️Happy hacking!`)}`)
+function getApps() {
+  // Get list of folders inside apps directory
+  const appIds = fs.readdirSync(`${ROOT_DIR}/apps`);
+  return appIds.map((id) => {
+    const app = require(`${ROOT_DIR}/apps/${id}/voltage-create-app-script.js`);
+    return {
+      id,
+      name: app.name,
+      script: async (opts) => {
+        const src = `${ROOT_DIR}/apps/${id}/app`;
+        const dest = `${process.cwd()}/${opts.name}`;
+        await copyDirectory(src, dest);
+        app.script({ ...opts, src, dest });
+      },
+    };
+  });
 }
 
-const apps = [
-  {
-    id: "sveltekit",
-    name: "SvelteKit Boilerplate",
-    init: initSvelteKit,
-  },
-];
-
-module.exports = apps;
+module.exports = getApps();

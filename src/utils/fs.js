@@ -22,11 +22,9 @@ async function copyDirectory(source, destination) {
 function replaceEnvValue(filePath, key, newValue) {
   // Read the content of the .env file
   const content = fs.readFileSync(filePath, "utf8");
-
   // Replace the value of the specified key
   const regex = new RegExp(`^${key}=.*$`, "gm");
   const modifiedContent = content.replace(regex, `${key}=${newValue}`);
-
   // Write the modified content back to the .env file
   fs.writeFileSync(filePath, modifiedContent, "utf8");
 }

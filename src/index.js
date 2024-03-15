@@ -79,22 +79,24 @@ Make sure you have a voltage account, team and node setup. You can signup for fr
     // Decrypt admin macaroon
     const decryptedMacaroon = decryptMacaroon(adminMacaroon, nodePassword);
     // Choose type of app
-    const appInit = await select({
-      message: "Select a type of application:",
+    const app = await select({
+      message: "Select an app:",
       choices: apps.map((app) => ({
         name: app.name,
-        value: app.init,
+        value: app,
       })),
     });
     const appName = await input({
       message: "Name of the app:",
       default: "my-voltage-app",
     });
-    await appInit({
+    await app.script({
       name: appName,
       apiEndpoint: `https://${nodeDetails.api_endpoint}:8080`,
       adminMacaroon: base64ToHex(decryptedMacaroon),
     });
+    console.log(`
+${chalk.hex("#FFA500")(`⚡️Happy hacking!`)}`);
   } catch (e) {
     console.log(e.message);
     process.exit(1);

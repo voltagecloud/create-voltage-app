@@ -1,0 +1,27 @@
+const chalk = require("chalk");
+const fs = require("fs");
+const { replaceEnvValue } = require("../../src/utils/fs");
+
+const APP_NAME = "NodeJS Barebones";
+
+function script({ name, apiEndpoint, adminMacaroon, src, dest }) {
+  // Copy .env.example to .env and set values
+  const exampleEnvPath = `${src}/.env.example`;
+  const envPath = `${dest}/.env`;
+  fs.copyFileSync(exampleEnvPath, envPath);
+  replaceEnvValue(envPath, "ADMIN_MACAROON", adminMacaroon);
+  replaceEnvValue(envPath, "API_ENDPOINT", apiEndpoint);
+  // prettier-ignore
+  console.log(`
+${chalk.gray("Your app is ready! Copy and paste the following to your terminal:")}
+
+${`cd ${dest};`}
+${`node --env-file=.env index.js;`}
+
+${chalk.gray(`You should see an output in the terminal with your node's admin macaroon and api endpoint.`)}`)
+}
+
+module.exports = {
+  name: APP_NAME,
+  script,
+};
