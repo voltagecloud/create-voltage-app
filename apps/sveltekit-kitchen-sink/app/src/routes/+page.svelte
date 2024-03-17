@@ -48,10 +48,30 @@
 	<!-- TODO: voltage documentation -->
 	{#if address || invoice}
 		<!-- TODO: check if payment succeeded -->
-
 		<QrCode clazz="aspect-square w-72" {address} {invoice} />
 	{/if}
-	<div class="flex gap-8">
+	<div class="flex flex-col gap-8 lg:flex-row">
+		<div class="flex flex-1 flex-col gap-4">
+			<Card>
+				<div class="flex flex-col gap-8">
+					<div class="flex flex-col gap-4">
+						<h2>Create Invoice</h2>
+						<!-- Make a simple form to call the lndCreateInvoices function with the amount and memo -->
+						<form class="flex flex-col gap-2" on:submit|preventDefault={createInvoice}>
+							<Input id="amount" bind:value={amount} label="Amount" />
+							<Input id="memo" bind:value={memo} label="Memo" />
+							<Button type="submit">Create Invoice</Button>
+						</form>
+					</div>
+				</div>
+			</Card>
+			<Card>
+				<div class="flex flex-col gap-4">
+					<h2>Get New Address</h2>
+					<Button type="submit" on:click={getNewAddress}>Get New Address</Button>
+				</div>
+			</Card>
+		</div>
 		<div class="max-w-1/2 flex flex-1 flex-col gap-4">
 			<Card>
 				<h2>Node Balance</h2>
@@ -107,27 +127,6 @@
 						{/each}
 					</ul>
 				{/await}
-			</Card>
-		</div>
-		<div class="flex flex-1 flex-col gap-4">
-			<Card>
-				<div class="flex flex-col gap-8">
-					<div class="flex flex-col gap-4">
-						<h2>Create Invoice</h2>
-						<!-- Make a simple form to call the lndCreateInvoices function with the amount and memo -->
-						<form class="flex flex-col gap-2" on:submit|preventDefault={createInvoice}>
-							<Input id="amount" bind:value={amount} label="Amount" />
-							<Input id="memo" bind:value={memo} label="Memo" />
-							<Button type="submit">Create Invoice</Button>
-						</form>
-					</div>
-				</div>
-			</Card>
-			<Card>
-				<div class="flex flex-col gap-4">
-					<h2>Get New Address</h2>
-					<Button type="submit" on:click={getNewAddress}>Get New Address</Button>
-				</div>
 			</Card>
 		</div>
 	</div>
