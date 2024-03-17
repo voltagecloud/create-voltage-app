@@ -7,7 +7,7 @@
 
 <label for={id}>{label}</label>
 <input
-	class="rounded-lg border-none p-3 text-gray-700 outline-gray-300"
+	class="rounded-lg border-2 border-gray-300 p-3 text-gray-700 outline-gray-300"
 	type="text"
 	{id}
 	{placeholder}
