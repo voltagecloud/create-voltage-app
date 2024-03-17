@@ -13,16 +13,12 @@
 	export let interval = 3000; // Interval to poll in milliseconds
 	export let pollCallback = () => {}; // FIXME: allow undefined without breaking TS
 
-	let rendered: boolean = false;
-
 	onMount(() => {
 		const qr = document.getElementById('qr') as any;
 		if (qr) {
 			qr.addEventListener('codeRendered', () => {
 				qr.callback = pollCallback;
 				qr.animateQRCode('MaterializeIn');
-				console.log({ rendered });
-				rendered = true;
 			});
 		}
 	});
@@ -32,7 +28,6 @@
 		if (qr) {
 			qr.removeEventListener('codeRendered', () => {
 				qr.callback = undefined;
-				rendered = false;
 			});
 		}
 	});
