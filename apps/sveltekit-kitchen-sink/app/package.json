@@ -33,7 +33,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@bitjson/qr-code": "^1.0.2",
-		"bitcoin-qr": "^1.0.4"
+		"bitcoin-qr": "^1.0.5"
 	}
 }
