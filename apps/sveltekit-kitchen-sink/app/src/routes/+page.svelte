@@ -6,11 +6,11 @@
     lndListInvoices,
     lndCreateInvoice,
     lndNewAddress,
-    Network,
     type GetInfoResponse
   } from "$lib/lnd";
-  import QrCode from "$components/QrCode.svelte";
   import { onMount } from "svelte";
+  // import QrCode from "$components/QrCode";
+  import QrCode from "../components/QrCode/QrCode.svelte";
 
   let amount = 0;
   let memo = "";
@@ -28,6 +28,7 @@
 
   const getInfo = async () => {
      info = await lndGetInfo();
+     console.log({info})
   };
 
   onMount(async () => {
@@ -53,12 +54,13 @@
   <button type="submit">Get New Address</button>
 </form>
 
-{#if address}
-  <QrCode {address} />
+{#if address || invoice}
+  <QrCode {address} {invoice} />
 {/if}
 
-<h2>Network</h2>
-<p>Network: {info.chains[0].network}</p>
+{#if info?.chains?.length}
+  <p>Network: {info.chains[0].network}</p>
+{/if}
 
 {#await lndNewAddress()}
   <p>loading...</p>
