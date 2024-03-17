@@ -38,7 +38,7 @@ export type Channel = {
 };
 
 type HTLC = {
-  // Define HTLC properties
+  // TODO: Define HTLC properties
 };
 
 type CommitmentType = "string"; // Define the actual possible values
@@ -128,4 +128,8 @@ export type Invoice = {
   amt_paid_msat: string;
   state: string;
   htlcs: HTLC[];
+};
+
+export type NewAddressResponse = {
+  address: string;
 };

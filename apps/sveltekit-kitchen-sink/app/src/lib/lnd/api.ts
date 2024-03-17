@@ -2,6 +2,7 @@ import type {
   GetInfoResponse,
   ListChannelsResponse,
   ListInvoicesResponse,
+  NewAddressResponse,
   WalletBalanceResponse,
 } from "./types";
 
@@ -53,4 +54,8 @@ export function lndListInvoices() {
 
 export function lndCreateInvoice(amount: number, memo: string) {
   return lndFetcher("/v1/invoices", { value: amount, memo });
+}
+
+export function lndNewAddress() {
+  return lndFetcher<NewAddressResponse>("/v1/newaddress");
 }
