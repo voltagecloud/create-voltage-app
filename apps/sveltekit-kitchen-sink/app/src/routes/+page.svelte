@@ -12,6 +12,7 @@
 	import QrCode from '$components/QrCode/QrCode.svelte';
 	import Button from '$components/Button/Button.svelte';
 	import Input from '$components/Input/Input.svelte';
+	import NetworkCapsule from '../features/NetworkCapsule/NetworkCapsule.svelte';
 
 	let amount = 0;
 	let memo = '';
@@ -37,7 +38,12 @@
 </script>
 
 <div class="mx-8 flex flex-col items-center">
-	<img src="/assets/voltage-name.svg" alt="Voltage" class="w-1/5" />
+	<div class="flex items-center gap-2">
+		<img src="/assets/voltage-name.svg" alt="Voltage" class="w-[400px]" />
+		{#if info?.chains?.length}
+			<NetworkCapsule network={info.chains[0].network} />
+		{/if}
+	</div>
 	<!-- TODO: voltage documentation -->
 
 	<div class="flex">
