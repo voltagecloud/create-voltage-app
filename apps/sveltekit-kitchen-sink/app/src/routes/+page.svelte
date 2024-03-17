@@ -34,7 +34,8 @@
   })
 </script>
 
-<h1>Welcome to your Voltage Application</h1>
+<img src="/assets/voltage-name.svg" alt="Voltage" class="w-1/5" />
+<h1>⚡️ My Voltage App ⚡️</h1>
 <!-- TODO: voltage documentation -->
 
 <h2>Create Invoice</h2>
@@ -59,14 +60,6 @@
 {#if info?.chains?.length}
   <p>Network: {info.chains[0].network}</p>
 {/if}
-
-{#await lndNewAddress()}
-  <p>loading...</p>
-{:then result}
-  <p>Address: {result.address}</p>
-{:catch error}
-  <p>error: {error.message}</p>
-{/await}
 
 <h2>Node Balance</h2>
 {#await lndGetWalletBalance()}
