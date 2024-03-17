@@ -13,6 +13,7 @@
 	import Button from '$components/Button/Button.svelte';
 	import Input from '$components/Input/Input.svelte';
 	import NetworkCapsule from '../features/NetworkCapsule/NetworkCapsule.svelte';
+	import Card from '$components/Card/Card.svelte';
 
 	let amount = 0;
 	let memo = '';
@@ -52,18 +53,20 @@
 				<p>Network: {info.chains[0].network}</p>
 			{/if}
 
-			<h2>Node Balance</h2>
-			{#await lndGetWalletBalance()}
-				<p>loading...</p>
-			{:then result}
-				<ul>
-					<li>Total Balance: {result.total_balance}</li>
-					<li>Confirmed Balance: {result.confirmed_balance}</li>
-					<li>Unconfirmed Balance: {result.unconfirmed_balance}</li>
-				</ul>
-			{:catch error}
-				<p>error: {error.message}</p>
-			{/await}
+			<Card>
+				<h2>Node Balance</h2>
+				{#await lndGetWalletBalance()}
+					<p>loading...</p>
+				{:then result}
+					<ul>
+						<li>Total Balance: {result.total_balance}</li>
+						<li>Confirmed Balance: {result.confirmed_balance}</li>
+						<li>Unconfirmed Balance: {result.unconfirmed_balance}</li>
+					</ul>
+				{:catch error}
+					<p>error: {error.message}</p>
+				{/await}
+			</Card>
 
 			<h2>Node Info</h2>
 			{#await lndGetInfo()}
@@ -130,3 +133,9 @@
 		</div>
 	</div>
 </div>
+
+<style lang="postcss">
+	h2 {
+		@apply text-2xl font-bold;
+	}
+</style>
