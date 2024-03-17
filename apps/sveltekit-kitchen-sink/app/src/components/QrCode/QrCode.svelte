@@ -12,6 +12,7 @@
 	export let isPolling = false;
 	export let interval = 3000; // Interval to poll in milliseconds
 	export let pollCallback = () => {}; // FIXME: allow undefined without breaking TS
+	export let clazz = '';
 
 	onMount(() => {
 		const qr = document.getElementById('qr') as any;
@@ -44,7 +45,7 @@
 {#if browser}
 	<bitcoin-qr
 		id="qr"
-		class="w-1/3"
+		class={clazz}
 		bitcoin={address}
 		lightning={invoice}
 		{parameters}
