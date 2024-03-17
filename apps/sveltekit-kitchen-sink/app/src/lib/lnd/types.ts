@@ -133,3 +133,9 @@ export type Invoice = {
 export type NewAddressResponse = {
   address: string;
 };
+
+export enum Network {
+  Mainnet = "mainnet",
+  Testnet = "testnet",
+  Mutinynet = "mutinynet",
+}

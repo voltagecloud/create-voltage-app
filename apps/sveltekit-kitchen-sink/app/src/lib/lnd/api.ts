@@ -1,4 +1,5 @@
 import type {
+  CreateInvoiceResponse,
   GetInfoResponse,
   ListChannelsResponse,
   ListInvoicesResponse,
@@ -53,7 +54,10 @@ export function lndListInvoices() {
 }
 
 export function lndCreateInvoice(amount: number, memo: string) {
-  return lndFetcher("/v1/invoices", { value: amount, memo });
+  return lndFetcher<CreateInvoiceResponse>("/v1/invoices", {
+    value: amount,
+    memo,
+  });
 }
 
 export function lndNewAddress() {

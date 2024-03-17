@@ -5,22 +5,68 @@
     lndListChannels,
     lndListInvoices,
     lndCreateInvoice,
+    lndNewAddress,
+    Network,
+    type GetInfoResponse
   } from "$lib/lnd";
+  import QrCode from "$components/QrCode.svelte";
+  import { onMount } from "svelte";
 
   let amount = 0;
   let memo = "";
-  let invoice = null;
+  let invoice = "";
+  let address = "";
+  let info: GetInfoResponse;
+
+  const getNewAddress = async () => {
+    address = (await lndNewAddress()).address;
+  };
 
   const createInvoice = async () => {
-    invoice = await lndCreateInvoice(amount, memo);
+    invoice = (await lndCreateInvoice(amount, memo)).payment_request;
   };
+
+  const getInfo = async () => {
+     info = await lndGetInfo();
+  };
+
+  onMount(async () => {
+    await getInfo();
+  })
 </script>
 
 <h1>Welcome to your Voltage Application</h1>
-<p>
-  Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the sveltekit
-  documentation
-</p>
+<!-- TODO: voltage documentation -->
+
+<h2>Create Invoice</h2>
+<!-- Make a simple form to call the lndCreateInvoices function with the amount and memo -->
+<form on:submit|preventDefault={createInvoice}>
+  <label for="amount">Amount</label>
+  <input type="number" id="amount" bind:value={amount} />
+  <label for="memo">Memo</label>
+  <input type="text" id="memo" bind:value={memo} />
+  <button type="submit">Create Invoice</button>
+</form>
+
+<!-- Call the lndNewAddress function and show QrCode -->
+<form on:submit|preventDefault={getNewAddress}>
+  <button type="submit">Get New Address</button>
+</form>
+
+{#if address}
+  <QrCode {address} />
+{/if}
+
+<h2>Network</h2>
+<p>Network: {info.chains[0].network}</p>
+
+{#await lndNewAddress()}
+  <p>loading...</p>
+{:then result}
+  <p>Address: {result.address}</p>
+{:catch error}
+  <p>error: {error.message}</p>
+{/await}
 
 <h2>Node Balance</h2>
 {#await lndGetWalletBalance()}
@@ -84,12 +130,3 @@
   </ul>
 {/await}
 
-<h2>Create Invoice</h2>
-<!-- Make a simple form to call the lndCreateInvoices function with the amount and memo -->
-<form on:submit|preventDefault={createInvoice}>
-  <label for="amount">Amount</label>
-  <input type="number" id="amount" bind:value={amount} />
-  <label for="memo">Memo</label>
-  <input type="text" id="memo" bind:value={memo} />
-  <button type="submit">Create Invoice</button>
-</form>
