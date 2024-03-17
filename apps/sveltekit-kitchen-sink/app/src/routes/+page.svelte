@@ -11,6 +11,7 @@
 	import { onMount } from 'svelte';
 	import QrCode from '$components/QrCode/QrCode.svelte';
 	import Button from '$components/Button/Button.svelte';
+	import Input from '$components/Input/Input.svelte';
 
 	let amount = 0;
 	let memo = '';
@@ -100,7 +101,6 @@
 			{:then result}
 				<ul class=" max-w-full break-all">
 					<!-- catch a dispatched created invoice -->
-
 					{#each result.invoices as invoice}
 						<li>{invoice.add_index} - {invoice.state} {invoice.payment_request}</li>
 					{/each}
@@ -110,18 +110,13 @@
 		<div class="flex flex-1 flex-col gap-4 bg-green-100">
 			<h2>Create Invoice</h2>
 			<!-- Make a simple form to call the lndCreateInvoices function with the amount and memo -->
-			<form on:submit|preventDefault={createInvoice}>
-				<label for="amount">Amount</label>
-				<input type="number" id="amount" bind:value={amount} />
-				<label for="memo">Memo</label>
-				<input type="text" id="memo" bind:value={memo} />
+			<form class="flex flex-col" on:submit|preventDefault={createInvoice}>
+				<Input id="amount" bind:value={amount} label="Amount" />
+				<Input id="memo" bind:value={memo} label="Memo" />
 				<Button type="submit">Create Invoice</Button>
 			</form>
 
-			<!-- Call the lndNewAddress function and show QrCode -->
-			<form on:submit|preventDefault={getNewAddress}>
-				<Button type="submit">Get New Address</Button>
-			</form>
+			<Button type="submit" on:click={getNewAddress}>Get New Address</Button>
 			{#if address || invoice}
 				<!-- TODO: check if payment succeeded -->
 				<QrCode {address} {invoice} />

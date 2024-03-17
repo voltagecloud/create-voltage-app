@@ -1,8 +1,9 @@
 <script lang="ts">
 	export let type: 'button' | 'submit' | 'reset' | null | undefined = 'button';
+	export let wide = false;
 </script>
 
-<button {type} on:click>
+<button class:wide {type} on:click>
 	<slot />
 </button>
 
@@ -16,5 +17,9 @@
 	button:focus-visible,
 	button:active {
 		@apply border-orange-700 bg-orange-700;
+	}
+
+	.wide {
+		@apply w-full;
 	}
 </style>
