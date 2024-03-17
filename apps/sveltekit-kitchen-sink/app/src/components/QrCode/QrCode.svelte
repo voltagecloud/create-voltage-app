@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
 	import { onDestroy, onMount } from 'svelte';
 	import { defineCustomElements } from 'bitcoin-qr/loader';
 
@@ -36,22 +35,16 @@
 	});
 </script>
 
-<svelte:head>
-	<script src="https://unpkg.com/@bitjson/qr-code@1.0.2/dist/qr-code.js"></script>
-</svelte:head>
-
-{#if browser}
-	<bitcoin-qr
-		id="qr"
-		class={clazz}
-		bitcoin={address}
-		lightning={invoice}
-		{parameters}
-		module-color={moduleColor}
-		position-center-color={positionCenterColor}
-		position-ring-color={positionRingColor}
-		img-src={imgSrc}
-		is-polling={isPolling}
-		{interval}
-	/>
-{/if}
+<bitcoin-qr
+	id="qr"
+	class={clazz}
+	bitcoin={address}
+	lightning={invoice}
+	{parameters}
+	module-color={moduleColor}
+	position-center-color={positionCenterColor}
+	position-ring-color={positionRingColor}
+	img-src={imgSrc}
+	is-polling={isPolling}
+	{interval}
+/>
