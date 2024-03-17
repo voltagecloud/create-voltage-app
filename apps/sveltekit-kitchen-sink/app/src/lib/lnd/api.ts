@@ -11,12 +11,13 @@ const mimeType = "application/json";
 
 const ADMIN_MACAROON = import.meta.env.VITE_ADMIN_MACAROON;
 const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
+const PORT = import.meta.env.VITE_PORT;
 
 async function lndFetcher<T>(
   path: string,
   postBody?: Record<string, unknown> | null
 ) {
-  const url = `${API_ENDPOINT}${path}`;
+  const url = `https://${API_ENDPOINT}:${PORT}${path}`;
   const method = postBody ? "POST" : "GET";
   const init: RequestInit = { method };
   let headers: HeadersInit = {
@@ -27,6 +28,7 @@ async function lndFetcher<T>(
     init.body = JSON.stringify(postBody);
     headers = { ...headers, "Content-Type": mimeType };
   }
+
   const result = await window.fetch(url, { ...init, headers });
   const data = await result.json().catch();
   if (!result.ok) {
