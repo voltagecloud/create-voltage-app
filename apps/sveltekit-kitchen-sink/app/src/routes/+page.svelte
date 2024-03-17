@@ -46,13 +46,12 @@
 		{/if}
 	</div>
 	<!-- TODO: voltage documentation -->
-
-	<div class="flex">
-		<div class="max-w-1/2 flex-1">
-			{#if info?.chains?.length}
-				<p>Network: {info.chains[0].network}</p>
-			{/if}
-
+	{#if address || invoice}
+		<!-- TODO: check if payment succeeded -->
+		<QrCode {address} {invoice} />
+	{/if}
+	<div class="flex gap-8">
+		<div class="max-w-1/2 flex flex-1 flex-col gap-4">
 			<Card>
 				<h2>Node Balance</h2>
 				{#await lndGetWalletBalance()}
@@ -67,69 +66,68 @@
 					<p>error: {error.message}</p>
 				{/await}
 			</Card>
+			<Card>
+				<h2>Node Info</h2>
+				{#await lndGetInfo()}
+					<p>loading...</p>
+				{:then result}
+					<ul>
+						<li>Node Alias: {result.alias}</li>
+						<li>Pubkey: {result.identity_pubkey}</li>
+						<li>Peers: {result.num_peers}</li>
+						<li>Synced to Chain: {result.synced_to_chain}</li>
+					</ul>
+				{:catch error}
+					<p>error: {error.message}</p>
+				{/await}
+			</Card>
+			<Card>
+				<h2>Channel Info</h2>
+				{#await lndListChannels()}
+					<p>loading...</p>
+				{:then result}
+					<ul>
+						<li>Number of channels: {result.channels.length}</li>
+					</ul>
+				{:catch error}
+					<p>error: {error.message}</p>
+				{/await}
+			</Card>
 
-			<h2>Node Info</h2>
-			{#await lndGetInfo()}
-				<p>loading...</p>
-			{:then result}
-				<ul>
-					<li>Node Alias: {result.alias}</li>
-					<li>Pubkey: {result.identity_pubkey}</li>
-					<li>Peers: {result.num_peers}</li>
-					<li>Synced to Chain: {result.synced_to_chain}</li>
-				</ul>
-			{:catch error}
-				<p>error: {error.message}</p>
-			{/await}
-
-			<h2>Channel Info</h2>
-			{#await lndListChannels()}
-				<p>loading...</p>
-			{:then result}
-				<ul>
-					<li>Number of channels: {result.channels.length}</li>
-				</ul>
-			{:catch error}
-				<p>error: {error.message}</p>
-			{/await}
-
-			<h2>Channel Info</h2>
-			{#await lndListChannels()}
-				<p>loading...</p>
-			{:then result}
-				<ul>
-					<li>Number of channels: {result.channels.length}</li>
-				</ul>
-			{:catch error}
-				<p>error: {error.message}</p>
-			{/await}
-
-			<h2>Invoices</h2>
-			{#await lndListInvoices()}
-				<p>leading...</p>
-			{:then result}
-				<ul class=" max-w-full break-all">
-					<!-- catch a dispatched created invoice -->
-					{#each result.invoices as invoice}
-						<li>{invoice.add_index} - {invoice.state} {invoice.payment_request}</li>
-					{/each}
-				</ul>
-			{/await}
+			<Card>
+				<h2>Invoices</h2>
+				{#await lndListInvoices()}
+					<p>loading...</p>
+				{:then result}
+					<ul class=" max-h-80 max-w-full overflow-y-scroll break-all">
+						<!-- catch a dispatched created invoice -->
+						{#each result.invoices as invoice}
+							<li>{invoice.add_index} - {invoice.state} {invoice.payment_request}</li>
+						{/each}
+					</ul>
+				{/await}
+			</Card>
 		</div>
-		<div class="flex flex-1 flex-col gap-4 bg-green-100">
-			<h2>Create Invoice</h2>
-			<!-- Make a simple form to call the lndCreateInvoices function with the amount and memo -->
-			<form class="flex flex-col" on:submit|preventDefault={createInvoice}>
-				<Input id="amount" bind:value={amount} label="Amount" />
-				<Input id="memo" bind:value={memo} label="Memo" />
-				<Button type="submit">Create Invoice</Button>
-			</form>
-
-			<Button type="submit" on:click={getNewAddress}>Get New Address</Button>
-			{#if address || invoice}
-				<!-- TODO: check if payment succeeded -->
-				<QrCode {address} {invoice} />
-			{/if}
+		<div class="flex flex-1 flex-col gap-4">
+			<Card>
+				<div class="flex flex-col gap-8">
+					<div class="flex flex-col gap-4">
+						<h2>Create Invoice</h2>
+						<!-- Make a simple form to call the lndCreateInvoices function with the amount and memo -->
+						<form class="flex flex-col gap-2" on:submit|preventDefault={createInvoice}>
+							<Input id="amount" bind:value={amount} label="Amount" />
+							<Input id="memo" bind:value={memo} label="Memo" />
+							<Button type="submit">Create Invoice</Button>
+						</form>
+					</div>
+				</div>
+			</Card>
+			<Card>
+				<div class="flex flex-col gap-4">
+					<h2>Get New Address</h2>
+					<Button type="submit" on:click={getNewAddress}>Get New Address</Button>
+				</div>
+			</Card>
 		</div>
 	</div>
 </div>
