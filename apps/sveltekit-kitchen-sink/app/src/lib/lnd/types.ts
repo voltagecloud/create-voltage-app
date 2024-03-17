@@ -70,7 +70,7 @@ export type GetInfoResponse = {
   synced_to_chain: boolean;
   synced_to_graph: boolean;
   testnet: boolean;
-  chains: {
+  chains?: {
     chain: string;
     network: string;
   }[];
