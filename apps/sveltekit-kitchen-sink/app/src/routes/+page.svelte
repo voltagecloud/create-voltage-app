@@ -9,7 +9,6 @@
     type GetInfoResponse
   } from "$lib/lnd";
   import { onMount } from "svelte";
-  // import QrCode from "$components/QrCode";
   import QrCode from "../components/QrCode/QrCode.svelte";
 
   let amount = 0;
@@ -28,7 +27,6 @@
 
   const getInfo = async () => {
      info = await lndGetInfo();
-     console.log({info})
   };
 
   onMount(async () => {
