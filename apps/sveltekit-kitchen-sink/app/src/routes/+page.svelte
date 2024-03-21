@@ -48,7 +48,7 @@
 	<!-- TODO: voltage documentation -->
 	{#if address || invoice}
 		<!-- TODO: check if payment succeeded -->
-		<QrCode clazz="aspect-square w-72" {address} {invoice} />
+		<QrCode image='https://voltage.imgix.net/Team.png?fm=webp&w=160' {address} {invoice} />
 	{/if}
 	<div class="flex flex-col gap-8 lg:flex-row">
 		<div class="flex flex-1 flex-col gap-4">

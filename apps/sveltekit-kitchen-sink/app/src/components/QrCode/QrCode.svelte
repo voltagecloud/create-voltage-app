@@ -5,14 +5,13 @@
 	export let parameters = '';
 	export let address = '';
 	export let invoice = '';
-	export let imgSrc = './assets/voltage.svg';
-	export let moduleColor = '#ff5000';
-	export let positionCenterColor = '#cc4100';
-	export let positionRingColor = '#9f3200';
+	export let image = './assets/voltage.svg';
+	export let dotsColor = '#ff5000';
+	export let cornersDotColor = '#cc4100';
+	export let cornersSquareColor = '#9f3200';
 	export let isPolling = false;
-	export let interval = 3000; // Interval to poll in milliseconds
+	export let pollInterval = 3000; // Interval to poll in milliseconds
 	export let pollCallback = () => {}; // FIXME: allow undefined without breaking TS
-	export let clazz = '';
 
 	onMount(() => {
 		defineCustomElements();
@@ -37,14 +36,19 @@
 
 <bitcoin-qr
 	id="qr"
-	class={clazz}
+	width="300"
+	height="300"
 	bitcoin={address}
 	lightning={invoice}
 	{parameters}
-	module-color={moduleColor}
-	position-center-color={positionCenterColor}
-	position-ring-color={positionRingColor}
-	img-src={imgSrc}
+	{image}
 	is-polling={isPolling}
-	{interval}
+	poll-interval={pollInterval}
+	dots-color={dotsColor}
+	corners-dot-color={cornersDotColor}
+	corners-square-color={cornersSquareColor}
+	corners-square-type="extra-rounded"
+	dots-type="classy-rounded"
 />
+
+
