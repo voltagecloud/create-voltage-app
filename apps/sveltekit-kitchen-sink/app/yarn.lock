@@ -591,7 +591,7 @@ binary-extensions@^2.0.0:
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-2.3.0.tgz#f6e14a97858d327252200242d4ccfe522c445522"
   integrity sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==
 
-bitcoin-qr@^1.1.1:
+bitcoin-qr@^1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/bitcoin-qr/-/bitcoin-qr-1.1.2.tgz#29e8b878c55c1e0cb761b3c34990228de28f8779"
   integrity sha512-8gKydwOQLvS+HbuogpP5Ax+3RiavUTf+1+aD10hrFivkG1SK1PAP4Gvp8tZHJrdca34ewGpSxxtolBt8XDbipw==

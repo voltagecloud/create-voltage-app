@@ -42,6 +42,7 @@
 	lightning={invoice}
 	{parameters}
 	{image}
+	type="svg"
 	is-polling={isPolling}
 	poll-interval={pollInterval}
 	dots-color={dotsColor}
