@@ -592,9 +592,9 @@ binary-extensions@^2.0.0:
   integrity sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==
 
 bitcoin-qr@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/bitcoin-qr/-/bitcoin-qr-1.1.1.tgz#7934e4d42bce854108aec6d638039b4bbbeb130e"
-  integrity sha512-OIZVvZ5KWD18atrjMFM2ZLe7ixZa+gSAAinLcK+O1oL9FFL6tP9uTZUbUVB3V0Unk/QOVVC/ghsm+NlSWqc8NA==
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/bitcoin-qr/-/bitcoin-qr-1.1.2.tgz#29e8b878c55c1e0cb761b3c34990228de28f8779"
+  integrity sha512-8gKydwOQLvS+HbuogpP5Ax+3RiavUTf+1+aD10hrFivkG1SK1PAP4Gvp8tZHJrdca34ewGpSxxtolBt8XDbipw==
   dependencies:
     qr-code-styling "^1.6.0-rc.1"
 

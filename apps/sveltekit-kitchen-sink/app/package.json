@@ -33,6 +33,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"bitcoin-qr": "^1.1.1"
+		"bitcoin-qr": "^1.1.2"
 	}
 }
