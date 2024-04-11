@@ -77,7 +77,7 @@ Make sure you have a voltage account, team and node setup. You can signup for fr
         message: "Node password:",
       }));
     // Get admin macaroon
-    const { adminMacaroon } = await api.getAdminMacaroonAndTlsCert(
+    const { adminMacaroon, tlsCert } = await api.getAdminMacaroonAndTlsCert(
       teamId,
       nodeId
     );
@@ -99,6 +99,7 @@ Make sure you have a voltage account, team and node setup. You can signup for fr
       name: appName,
       apiEndpoint: `https://${nodeDetails.api_endpoint}:8080`,
       adminMacaroon: base64ToHex(decryptedMacaroon),
+      tlsCert,
     });
     console.log(`
 ${chalk.hex("#FFA500")(`⚡️Happy hacking!`)}`);
