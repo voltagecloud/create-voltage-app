@@ -54,7 +54,9 @@ Make sure you have a voltage account, team and node setup. You can signup for fr
     // Get nodes
     const nodes = await api.getNodes(teamId);
     if (nodes.length === 0) {
-      throw new Error("No nodes found in the selected team.  Please create one first.");
+      throw new Error(
+        "No nodes found in the selected team.  Please create one first."
+      );
     }
     // Prompt which lnd node to use
     const nodeId = await select({

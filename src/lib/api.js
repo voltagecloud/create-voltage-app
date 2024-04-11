@@ -2,15 +2,15 @@ const axios = require("axios");
 const chalk = require("chalk");
 
 const API_URL = "https://frontend-api.voltage.cloud";
+const AUTH_URL = "https://auth.voltage.cloud";
 const APP_URL = "https://app.voltage.cloud";
-const GRAPHQL_URL = "https://graphql.voltage.cloud/";
 
 class Api {
   constructor(opts) {
     this.accessToken = opts?.accessToken;
     this.baseApiUrl = process.env.VOLTAGE_API_URL || API_URL;
+    this.baseAuthUrl = process.env.VOLTAGE_AUTH_URL || AUTH_URL;
     this.baseAppUrl = process.env.VOLTAGE_APP_URL || APP_URL;
-    this.baseGraphqlApiUrl = process.env.VOLTAGE_GRAPHQL_URL || GRAPHQL_URL;
     this.teams = [];
   }
 
@@ -50,8 +50,12 @@ class Api {
     return `${this.baseApiUrl}${path}`;
   }
 
+  makeAuthUrl(path) {
+    return `${this.baseAuthUrl}${path}`;
+  }
+
   async login(opts) {
-    const url = this.makeAppUrl("/api/auth/login");
+    const url = this.makeAuthUrl("/auth/login");
     const response = await this.post({
       url,
       data: {
@@ -59,42 +63,32 @@ class Api {
         password: opts.password,
       },
     });
-    if (response.token) {
-      // MFA
-      return { mfa: true, token: response.token };
+    if (response.session) {
+      // Has mfa
+      return { mfa: true, token: response.session.token };
     } else {
-      this.accessToken = response.accessToken;
+      this.accessToken = response.auth.access_token;
       console.log(chalk.green("️Login successful!"));
     }
   }
 
   async mfaLogin(opts) {
-    const url = this.makeAppUrl("/api/auth/loginmfa");
+    const url = this.makeAuthUrl("/auth/mfa_challenge");
     const response = await this.post({
       url,
       data: {
         email: opts.email,
         code: opts.code,
-        token: opts.token,
+        session: opts.token,
       },
     });
-    this.accessToken = response.auth.accessToken;
+    this.accessToken = response.auth.access_token;
     console.log(chalk.green("️Login successful!"));
   }
 
   async getTeams() {
-    const query = `
-        query {
-            currentUser {
-                organizations {
-                    id
-                    name
-                }
-            }
-        }
-    `;
-    const response = await this.authedPost(this.baseGraphqlApiUrl, { query });
-    this.teams = response.data.currentUser.organizations;
+    const url = this.makeAuthUrl("/organizations");
+    this.teams = await this.authedGet(url);
   }
 
   async getNodes(teamId) {
