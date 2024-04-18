@@ -2,15 +2,13 @@ const axios = require("axios");
 const chalk = require("chalk");
 
 const API_URL = "https://frontend-api.voltage.cloud";
-const AUTH_URL = "https://auth.voltage.cloud";
-const APP_URL = "https://app.voltage.cloud";
+const AUTH_URL = "https://auth.voltage.cloud/api/v1";
 
 class Api {
   constructor(opts) {
     this.accessToken = opts?.accessToken;
     this.baseApiUrl = process.env.VOLTAGE_API_URL || API_URL;
     this.baseAuthUrl = process.env.VOLTAGE_AUTH_URL || AUTH_URL;
-    this.baseAppUrl = process.env.VOLTAGE_APP_URL || APP_URL;
     this.teams = [];
   }
 
@@ -40,10 +38,6 @@ class Api {
   async get(url) {
     const response = await axios.get(url);
     return response.data;
-  }
-
-  makeAppUrl(path) {
-    return `${this.baseAppUrl}${path}`;
   }
 
   makeApiUrl(path) {
