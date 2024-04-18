@@ -1,7 +1,9 @@
 import type {
+  CreateInvoiceResponse,
   GetInfoResponse,
   ListChannelsResponse,
   ListInvoicesResponse,
+  NewAddressResponse,
   WalletBalanceResponse,
 } from "./types";
 
@@ -25,31 +27,7 @@ async function lndFetcher<T>(
     init.body = JSON.stringify(postBody);
     headers = { ...headers, "Content-Type": mimeType };
   }
-  const result = await window.fetch(url, { ...init, headers });
-  const data = await result.json().catch();
-  if (!result.ok) {
-    throw new Error(
-      data?.message || result.statusText || `${path} 😱 ${result.status}`
-    );
-  }
-  return data as T;
-}
 
-async function lndPoster<T>(
-  path: string,
-  postBody?: Record<string, unknown> | null
-) {
-  const url = `${API_ENDPOINT}${path}`;
-  const method = postBody ? "POST" : "GET";
-  const init: RequestInit = { method };
-  let headers: HeadersInit = {
-    "Grpc-Metadata-Macaroon": ADMIN_MACAROON,
-    Accept: mimeType,
-  };
-  if (postBody) {
-    init.body = JSON.stringify(postBody);
-    headers = { ...headers, "Content-Type": mimeType };
-  }
   const result = await window.fetch(url, { ...init, headers });
   const data = await result.json().catch();
   if (!result.ok) {
@@ -77,5 +55,12 @@ export function lndListInvoices() {
 }
 
 export function lndCreateInvoice(amount: number, memo: string) {
-  return lndPoster("/v1/invoices", { value: amount, memo });
+  return lndFetcher<CreateInvoiceResponse>("/v1/invoices", {
+    value: amount,
+    memo,
+  });
+}
+
+export function lndNewAddress() {
+  return lndFetcher<NewAddressResponse>("/v1/newaddress");
 }
