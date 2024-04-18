@@ -18,7 +18,8 @@ ${chalk.gray("Your app is ready! Copy and paste the following to your terminal:"
 ${`cd ${dest};`}
 ${`node --env-file=.env index.js;`}
 
-${chalk.gray(`You should see an output in the terminal with your node's admin macaroon and api endpoint.`)}`)
+${chalk.gray(`You'll need to have Node.js installed in your system in order to run the app.`)}
+${chalk.gray(`You should eventually see an output in the terminal with your node's admin macaroon and api endpoint.`)}`)
 }
 
 module.exports = {

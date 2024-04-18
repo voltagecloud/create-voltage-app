@@ -12,19 +12,16 @@ function script({ name, apiEndpoint, adminMacaroon, src, dest }) {
   fs.copyFileSync(exampleEnvPath, envPath);
   replaceEnvValue(envPath, "EXPO_PUBLIC_ADMIN_MACAROON", adminMacaroon);
   replaceEnvValue(envPath, "EXPO_PUBLIC_API_ENDPOINT", apiEndpoint);
-  // Install dependencies
-  console.log(chalk.blue("Installing dependencies..."));
-  execSync("npm install", { cwd: dest, stdio: "ignore" });
-  // Done instructions
-  console.log(chalk.green("Done!"));
   // prettier-ignore
   console.log(`
 ${chalk.gray("Your app is ready! Copy and paste the following to your terminal:")}
 
 ${`cd ${dest};`}
-${`npx expo start`}
+${`npm install;`}
+${`npx expo start;`}
 
-${chalk.gray("Scan the QR code on the Expo app on your phone or run it in a simulator if you have the necessary SDKs setup")}`)
+${chalk.gray(`You'll need to have Node.js and npm installed in your system in order to install & run the app`)}
+${chalk.gray("Once it's running, you can choose to run the app on a real device using the Expo app (install via your phone's app store) or on a local simulator if you have the necessary SDKs setup")}`)
 }
 
 module.exports = {
