@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  height: -webkit-fill-available;
+}
+
+body,
+#app,
+main {
+  height: 100vh;
+  /* mobile viewport bug fix */
+  height: -webkit-fill-available;
+}
+
+button[aria-label="Close modal"] {
+  @apply hidden;
+}
+
+div:focus {
+  outline: none;
+}
+
+.fireworks {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+}
+
+@keyframes orangeGlow {
+  0% {
+    text-shadow: 0 0 10px #00bcd4, 0 0 20px #00bcd4, 0 0 30px #00bcd4,
+      0 0 40px #00bcd4, 0 0 50px #00bcd4, 0 0 60px #00bcd4, 0 0 70px #00bcd4;
+  }
+  100% {
+    text-shadow: 0 0 20px #00bcd4, 0 0 40px #00bcd4, 0 0 60px #00bcd4,
+      0 0 80px #00bcd4, 0 0 100px #00bcd4, 0 0 120px #00bcd4, 0 0 140px #00bcd4;
+  }
+}
+
+@keyframes greenGlow {
+  0% {
+    text-shadow: 0 0 10px #ff8c00, 0 0 20px #ff8c00, 0 0 30px #ff8c00,
+      0 0 40px #ff8c00, 0 0 50px #ff8c00, 0 0 60px #ff8c00, 0 0 70px #ff8c00;
+  }
+  100% {
+    text-shadow: 0 0 20px #ff8c00, 0 0 40px #ff8c00, 0 0 60px #ff8c00,
+      0 0 80px #ff8c00, 0 0 100px #ff8c00, 0 0 120px #ff8c00, 0 0 140px #ff8c00;
+  }
+}
+
+@keyframes glitch {
+  0% {
+    transform: none;
+  }
+  20% {
+    transform: skew(-5deg, 0);
+  }
+  40% {
+    transform: none;
+  }
+  60% {
+    transform: skew(5deg, 0);
+  }
+  80% {
+    transform: none;
+  }
+  100% {
+    transform: none;
+  }
+}
+
+.shadow-orange-text {
+  animation: glitch 0.2s infinite alternate, greenGlow 2s infinite alternate;
+}
+
+.shadow-green-text {
+  animation: glitch 0.5s infinite alternate, orangeGlow 2s infinite alternate;
+}
