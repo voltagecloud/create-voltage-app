@@ -2,7 +2,7 @@ const chalk = require("chalk");
 const fs = require("fs");
 const { replaceEnvValue } = require("../../src/utils/fs");
 
-const APP_NAME = "NodeJS Barebones";
+const APP_NAME = "Backend Starter - Node.js";
 
 function script({ name, apiEndpoint, adminMacaroon, src, dest }) {
   // Copy .env.example to .env and set values

@@ -1,6 +1,6 @@
 {
   "name": "create-voltage-app",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "description": "This tool will help you get started with creating lightning powered apps that connect to your voltage node.  Make sure you have a voltage account, team and node setup. You can signup for free at https://app.voltage.cloud.",
   "scripts": {
     "dev": "npx nodemon src/index.js"
