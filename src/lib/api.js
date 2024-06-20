@@ -81,7 +81,7 @@ class Api {
   }
 
   async getTeams() {
-    const url = this.makeAuthUrl("/organizations");
+    const url = this.makeAuthUrl("/users");
     this.teams = await this.authedGet(url);
   }
 
