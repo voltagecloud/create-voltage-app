@@ -33,6 +33,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"bitcoin-qr": "^1.1.2"
+		"bitcoin-qr": "^1.1.2",
+		"lucide-svelte": "^0.428.0"
 	}
 }
