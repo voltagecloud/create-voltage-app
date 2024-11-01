@@ -76,13 +76,25 @@ Make sure you have a voltage account, team and node setup. You can signup for fr
       (await password({
         message: "Node password:",
       }));
-    // Get admin macaroon
-    const { adminMacaroon, tlsCert } = await api.getAdminMacaroonAndTlsCert(
+
+    // Get read macaroon and TLS cert
+    const { readMacaroon, tlsCert: readTlsCert } = await api.getReadMacaroonAndTlsCert(
       teamId,
       nodeId
     );
-    // Decrypt admin macaroon
-    const decryptedMacaroon = decryptMacaroon(adminMacaroon, nodePassword);
+
+    // Get invoice macaroon and TLS cert
+    const { invoiceMacaroon, tlsCert: invoiceTlsCert } = await api.getInvoiceMacaroonAndTlsCert(
+      teamId,
+      nodeId
+    );
+
+    // Decrypt read macaroon
+    const decryptedReadMacaroon = decryptMacaroon(readMacaroon, nodePassword);
+
+    // Decrypt invoice macaroon
+    const decryptedInvoiceMacaroon = decryptMacaroon(invoiceMacaroon, nodePassword);
+
     // Choose type of app
     const app = await select({
       message: "Select an app:",
@@ -98,8 +110,9 @@ Make sure you have a voltage account, team and node setup. You can signup for fr
     await app.script({
       name: appName,
       apiEndpoint: `https://${nodeDetails.api_endpoint}:8080`,
-      adminMacaroon: base64ToHex(decryptedMacaroon),
-      tlsCert,
+      readMacaroon: base64ToHex(decryptedReadMacaroon),
+      invoiceMacaroon: base64ToHex(decryptedInvoiceMacaroon),
+      tlsCert: readTlsCert, // We can use either readTlsCert or invoiceTlsCert, as they should be the same
     });
     console.log(`
 ${chalk.hex("#FFA500")(`⚡️Happy hacking!`)}`);

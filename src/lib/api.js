@@ -107,6 +107,28 @@ class Api {
       tlsCert: tls_cert,
     };
   }
+
+  async getReadMacaroonAndTlsCert(teamId, nodeId) {
+    const url = this.makeApiUrl(
+      `/organizations/${teamId}/nodes/${nodeId}/macaroons/readonly`
+    );
+    const { macaroon, tls_cert } = await this.authedGet(url);
+    return {
+      readMacaroon: macaroon,
+      tlsCert: tls_cert,
+    };
+  }
+
+  async getInvoiceMacaroonAndTlsCert(teamId, nodeId) {
+    const url = this.makeApiUrl(
+      `/organizations/${teamId}/nodes/${nodeId}/macaroons/invoice`
+    );
+    const { macaroon, tls_cert } = await this.authedGet(url);
+    return {
+      invoiceMacaroon: macaroon,
+      tlsCert: tls_cert,
+    };
+  }
 }
 
 module.exports = Api;
