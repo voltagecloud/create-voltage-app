@@ -2,7 +2,7 @@ const chalk = require("chalk");
 const fs = require("fs");
 const { replaceEnvValue } = require("../../src/utils/fs");
 
-const APP_NAME = "App Example - SvelteKit";
+const APP_NAME = "Svelte Kitchen Sink - Svelte";
 
 function script({ name, apiEndpoint, adminMacaroon, src, dest }) {
   // Copy .env.example to .env and set values

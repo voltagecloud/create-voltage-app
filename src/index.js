@@ -5,13 +5,14 @@ const { decryptMacaroon, base64ToHex } = require("./utils/crypto");
 const { input, password } = require("@inquirer/prompts");
 const { getPackageJsonVersion } = require("./utils/fs");
 const select = require("@inquirer/select").default;
+const { Separator } = require('@inquirer/select');
 const chalk = require("chalk");
 
 async function run() {
   const packageVersion = await getPackageJsonVersion();
   // prettier-ignore
   console.log(`
-${chalk.hex("#FFA500")(`Welcome to create-voltage-app!`)} ${chalk.green(`(version: ${packageVersion})`)}
+${chalk.hex("#FFC000")(`Welcome to create-voltage-app!`)} ${chalk.green(`(version: ${packageVersion})`)}
 `);
   // prettier-ignore
   console.log(
@@ -95,13 +96,18 @@ Make sure you have a voltage account, team and node setup. You can signup for fr
     // Decrypt invoice macaroon
     const decryptedInvoiceMacaroon = decryptMacaroon(invoiceMacaroon, nodePassword);
 
-    // Choose type of app
+    const categorizedApps = apps;
+    const appChoices = [
+      new Separator(chalk.green('Boilerplates: (basic App scaffolding with Voltage integrated)')),
+      ...categorizedApps.Boilerplates.map(app => ({ name: `  ${app.name}`, value: app })),
+      new Separator(chalk.green('Templates: (fully featured App templates that use Voltage)')),
+      ...categorizedApps.Templates.map(app => ({ name: `  ${app.name}`, value: app }))
+    ];
+
     const app = await select({
       message: "Select an app:",
-      choices: apps.map((app) => ({
-        name: app.name,
-        value: app,
-      })),
+      choices: appChoices,
+      loop: false // This prevents the infinite scroll
     });
     const appName = await input({
       message: "Name of the app:",
@@ -115,7 +121,7 @@ Make sure you have a voltage account, team and node setup. You can signup for fr
       tlsCert: readTlsCert, // We can use either readTlsCert or invoiceTlsCert, as they should be the same
     });
     console.log(`
-${chalk.hex("#FFA500")(`⚡️Happy hacking!`)}`);
+${chalk.hex("#FFC000")(`⚡️Happy hacking!`)}`);
   } catch (e) {
     console.log(e.message);
     process.exit(1);

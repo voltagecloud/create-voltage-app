@@ -1,17 +1,17 @@
-const {
-  getRootDirectory,
-  copyDirectory,
-  replaceEnvValue,
-} = require("../utils/fs");
 const fs = require("fs");
+const { getRootDirectory, copyDirectory } = require("../utils/fs");
 const ROOT_DIR = getRootDirectory();
 
 function getApps() {
-  // Get list of folders inside apps directory
   const appIds = fs.readdirSync(`${ROOT_DIR}/apps`);
-  return appIds.map((id) => {
+  const categorizedApps = {
+    Boilerplates: [],
+    Templates: []
+  };
+
+  appIds.forEach((id) => {
     const app = require(`${ROOT_DIR}/apps/${id}/voltage-create-app-script.js`);
-    return {
+    const appInfo = {
       id,
       name: app.name,
       script: async (opts) => {
@@ -21,7 +21,15 @@ function getApps() {
         app.script({ ...opts, src, dest });
       },
     };
+
+    if (app.name.includes('Voltage Tipper') || app.name.includes('Kitchen Sink') || app.name.includes('Countdown')) {
+      categorizedApps.Templates.push(appInfo);
+    } else {
+      categorizedApps.Boilerplates.push(appInfo);
+    }
   });
+
+  return categorizedApps;
 }
 
 module.exports = getApps();
