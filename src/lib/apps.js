@@ -3,7 +3,9 @@ const { getRootDirectory, copyDirectory } = require("../utils/fs");
 const ROOT_DIR = getRootDirectory();
 
 function getApps() {
-  const appIds = fs.readdirSync(`${ROOT_DIR}/apps`);
+  const appIds = fs.readdirSync(`${ROOT_DIR}/apps`)
+    .filter(id => !id.startsWith('.')); // Filter out hidden files like .DS_Store
+    
   const categorizedApps = {
     Boilerplates: [],
     Templates: []
