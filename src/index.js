@@ -1,11 +1,8 @@
 #!/usr/bin/env node
-const VoltageApi = require("./lib/api");
-const apps = require("./lib/apps");
-const { decryptMacaroon, base64ToHex } = require("./utils/crypto");
-const { input, password } = require("@inquirer/prompts");
+const runInfrastructure = require("./products/infrastructure");
+const runPayments = require("./products/payments");
 const { getPackageJsonVersion } = require("./utils/fs");
 const select = require("@inquirer/select").default;
-const { Separator } = require('@inquirer/select');
 const chalk = require("chalk");
 
 async function run() {
@@ -16,112 +13,33 @@ ${chalk.hex("#FFC000")(`Welcome to create-voltage-app!`)} ${chalk.green(`(versio
 `);
   // prettier-ignore
   console.log(
-    chalk.gray(`This tool will help you get started with creating lightning powered apps that connect to your voltage node.
-Make sure you have a voltage account, team and node setup. You can signup for free at ${chalk.underline('https://app.voltage.cloud')}.
+    chalk.gray(`This tool will help you get started with creating lightning powered apps using Voltage.
+First, lets choose which voltage product you want to use.
     `)
   );
+
   try {
-    // VoltageApi instance
-    const api = new VoltageApi({});
-    // Prompt for email and password
-    const email =
-      process.env.VOLTAGE_EMAIL ||
-      (await input({
-        message: "Email:",
-      }));
-    const pwd =
-      process.env.VOLTAGE_PASSWORD ||
-      (await password({
-        message: "Password:",
-      }));
-    // Login
-    const result = await api.login({ email, password: pwd });
-    if (result?.token) {
-      const mfaCode = await input({
-        message: "Authenticator code:",
-      });
-      await api.mfaLogin({ code: mfaCode, token: result.token, email });
+    // Prompt user to select which product to use
+    const selectedProduct = await select({
+      message: "Choose a product:",
+      choices: [
+        {
+          name: "Infrastructure - Build an app that connects to your own lightning node hosted with Voltage",
+          value: "product-infrastructure",
+        },
+        {
+          name: "Payments - Build an app using our simplified payments API",
+          value: "product-payments",
+        },
+      ],
+    });
+
+    // Run the selected flow
+    if (selectedProduct === "product-infrastructure") {
+      await runInfrastructure();
+    } else if (selectedProduct === "product-payments") {
+      await runPayments();
     }
-    // Get teams
-    await api.getTeams();
-    // Promp which team to use
-    const teamId = await select({
-      message: "Select a team:",
-      choices: api.teams.map((team) => ({
-        name: team.name,
-        value: team.id,
-      })),
-    });
-    // Get nodes
-    const nodes = await api.getNodes(teamId);
-    if (nodes.length === 0) {
-      throw new Error(
-        "No nodes found in the selected team.  Please create one first."
-      );
-    }
-    // Prompt which lnd node to use
-    const nodeId = await select({
-      message: "Select a node:",
-      choices: nodes
-        .filter((n) => n.node_type === "lnd")
-        .map((n) => ({
-          name: n.node_name,
-          value: n.node_id,
-        })),
-    });
-    // Get node details
-    const nodeDetails = await api.getNodeDetails(teamId, nodeId);
-    // Prompt node password
-    const nodePassword =
-      process.env.VOLTAGE_NODE_PASSWORD ||
-      (await password({
-        message: "Node password:",
-      }));
-
-    // Get read macaroon and TLS cert
-    const { readMacaroon, tlsCert: readTlsCert } = await api.getReadMacaroonAndTlsCert(
-      teamId,
-      nodeId
-    );
-
-    // Get invoice macaroon and TLS cert
-    const { invoiceMacaroon, tlsCert: invoiceTlsCert } = await api.getInvoiceMacaroonAndTlsCert(
-      teamId,
-      nodeId
-    );
-
-    // Decrypt read macaroon
-    const decryptedReadMacaroon = decryptMacaroon(readMacaroon, nodePassword);
-
-    // Decrypt invoice macaroon
-    const decryptedInvoiceMacaroon = decryptMacaroon(invoiceMacaroon, nodePassword);
-
-    const categorizedApps = apps;
-    const appChoices = [
-      new Separator(chalk.green('Boilerplates: (basic App scaffolding with Voltage integrated)')),
-      ...categorizedApps.Boilerplates.map(app => ({ name: `  ${app.name}`, value: app })),
-      new Separator(chalk.green('Templates: (fully featured App templates that use Voltage)')),
-      ...categorizedApps.Templates.map(app => ({ name: `  ${app.name}`, value: app }))
-    ];
-
-    const app = await select({
-      message: "Select an app:",
-      choices: appChoices,
-      loop: false // This prevents the infinite scroll
-    });
-    const appName = await input({
-      message: "Name of the app:",
-      default: "my-voltage-app",
-    });
-    await app.script({
-      name: appName,
-      apiEndpoint: `https://${nodeDetails.api_endpoint}:8080`,
-      readMacaroon: base64ToHex(decryptedReadMacaroon),
-      invoiceMacaroon: base64ToHex(decryptedInvoiceMacaroon),
-      tlsCert: readTlsCert, // We can use either readTlsCert or invoiceTlsCert, as they should be the same
-    });
-    console.log(`
-${chalk.hex("#FFC000")(`⚡️Happy hacking!`)}`);
   } catch (e) {
     console.log(e.message);
     process.exit(1);
