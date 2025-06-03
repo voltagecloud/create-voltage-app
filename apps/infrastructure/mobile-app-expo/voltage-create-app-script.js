@@ -1,7 +1,7 @@
 const chalk = require("chalk");
 const { execSync } = require("child_process");
 const fs = require("fs");
-const { replaceEnvValue } = require("../../src/utils/fs");
+const { replaceEnvValue } = require("../../../src/utils/fs");
 
 const APP_NAME = "Mobile App Starter - Expo React Native";
 

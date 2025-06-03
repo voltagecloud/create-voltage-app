@@ -1,6 +1,6 @@
 const chalk = require("chalk");
 const fs = require("fs");
-const { replaceEnvValue } = require("../../src/utils/fs");
+const { replaceEnvValue } = require("../../../src/utils/fs");
 
 const APP_NAME = "Backend Starter - Node.js";
 

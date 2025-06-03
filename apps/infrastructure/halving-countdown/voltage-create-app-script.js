@@ -1,8 +1,8 @@
 const chalk = require("chalk");
 const fs = require("fs");
-const { replaceEnvValue } = require("../../src/utils/fs");
+const { replaceEnvValue } = require("../../../src/utils/fs");
 
-const APP_NAME = "Svelte Kitchen Sink - Svelte";
+const APP_NAME = "Halving Countdown - Svelte";
 
 function script({ name, apiEndpoint, adminMacaroon, src, dest }) {
   // Copy .env.example to .env and set values
@@ -20,7 +20,7 @@ ${`npm install;`}
 ${`npm run dev -- --open;`}
 
 ${chalk.gray(`You'll need to have Node.js and npm installed in your system in order to install & run the app`)}
-${chalk.gray(`After running, your browser should automatically open the app at ${chalk.underline("https://localhost:3000")}`)}`)
+${chalk.gray(`After running, your browser should automatically open the app at ${chalk.underline("https://localhost:5173")}`)}`)
 }
 
 module.exports = {

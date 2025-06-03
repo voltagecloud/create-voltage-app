@@ -3,13 +3,14 @@ const chalk = require("chalk");
 
 const API_URL = "https://frontend-api.voltage.cloud";
 const AUTH_URL = "https://auth.voltage.cloud/api/v1";
+const BACKEND_URL = "https://backend.voltage.cloud/api/v1";
 
 class Api {
   constructor(opts) {
     this.accessToken = opts?.accessToken;
     this.baseApiUrl = process.env.VOLTAGE_API_URL || API_URL;
+    this.baseBackendUrl = process.env.VOLTAGE_BACKEND_URL || BACKEND_URL;
     this.baseAuthUrl = process.env.VOLTAGE_AUTH_URL || AUTH_URL;
-    this.teams = [];
   }
 
   async authedGet(url) {
@@ -38,6 +39,10 @@ class Api {
   async get(url) {
     const response = await axios.get(url);
     return response.data;
+  }
+
+  makeBackendUrl(path) {
+    return `${this.baseBackendUrl}${path}`;
   }
 
   makeApiUrl(path) {
@@ -82,7 +87,7 @@ class Api {
 
   async getTeams() {
     const url = this.makeAuthUrl("/users");
-    this.teams = await this.authedGet(url);
+    return this.authedGet(url);
   }
 
   async getNodes(teamId) {
@@ -93,8 +98,7 @@ class Api {
 
   async getNodeDetails(teamId, nodeId) {
     const url = this.makeApiUrl(`/organizations/${teamId}/nodes/${nodeId}`);
-    const response = await this.authedGet(url);
-    return response;
+    return this.authedGet(url);
   }
 
   async getAdminMacaroonAndTlsCert(teamId, nodeId) {
@@ -128,6 +132,22 @@ class Api {
       invoiceMacaroon: macaroon,
       tlsCert: tls_cert,
     };
+  }
+
+  // Payments Product API
+  async getEnvironments(teamId) {
+    const url = this.makeAuthUrl(`/organizations/${teamId}/environments`);
+    return this.authedGet(url);
+  }
+
+  async getWallets(teamId) {
+    const url = this.makeBackendUrl(`/organizations/${teamId}/wallets`);
+    return this.authedGet(url);
+  }
+
+  async getApiKeys(teamId) {
+    const url = this.makeAuthUrl(`/organizations/${teamId}/api_keys`);
+    return this.authedGet(url);
   }
 }
 
