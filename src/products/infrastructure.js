@@ -100,7 +100,7 @@ Great! Now lets log you into your Voltage account.
       tlsCert,
     });
     console.log(`
-${chalk.hex("#FFC000")(`⚡️Happy hacking!`)}`);
+${chalk.hex("#FFC000")(`⚡️ Happy hacking!`)}`);
   } catch (e) {
     console.log(e.message);
     process.exit(1);

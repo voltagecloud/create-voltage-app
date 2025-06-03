@@ -17,20 +17,24 @@ function script({
   const exampleEnvPath = `${src}/.env.example`;
   const envPath = `${dest}/.env`;
   fs.copyFileSync(exampleEnvPath, envPath);
-  replaceEnvValue(envPath, "VOLTAGE_BACKEND_URL", voltageBackendUrl);
-  replaceEnvValue(envPath, "API_KEY", apiKey);
-  replaceEnvValue(envPath, "WALLET_ID", walletId);
-  replaceEnvValue(envPath, "TEAM_ID", teamId);
-  replaceEnvValue(envPath, "ENVIRONMENT_ID", environmentId);
+  
+  // Map to new SDK-compatible environment variable names
+  replaceEnvValue(envPath, "VOLTAGE_BASE_URL", voltageBackendUrl);
+  replaceEnvValue(envPath, "VOLTAGE_API_KEY", apiKey);
+  replaceEnvValue(envPath, "VOLTAGE_WALLET_ID", walletId);
+  replaceEnvValue(envPath, "VOLTAGE_ORGANIZATION_ID", teamId);
+  replaceEnvValue(envPath, "VOLTAGE_ENVIRONMENT_ID", environmentId);
+  
   // prettier-ignore
   console.log(`
 ${chalk.gray("Your app is ready! Copy and paste the following to your terminal:")}
 
 ${`cd ${dest};`}
-${`node --env-file=.env index.js;`}
+${`npm install;`}
+${`npm start;`}
 
 ${chalk.gray(`You'll need to have Node.js installed in your system in order to run the app.`)}
-${chalk.gray(`You should eventually see an output in the terminal with your node's admin macaroon and api endpoint.`)}`);
+${chalk.gray(`The app now uses the official Voltage API SDK for better reliability and type safety.`)}`);
 }
 
 module.exports = {

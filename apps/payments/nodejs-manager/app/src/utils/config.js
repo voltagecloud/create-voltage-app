@@ -31,26 +31,30 @@ function loadEnv() {
 // Load environment variables
 const env = loadEnv();
 
-// Export configuration
+// Export configuration using SDK-compatible names
 module.exports = {
-  organizationId: env.TEAM_ID,
-  environmentId: env.ENVIRONMENT_ID,
-  apiKey: env.API_KEY,
-  baseUrl: env.VOLTAGE_BACKEND_URL,
-  walletId: env.WALLET_ID,
+  // SDK configuration
+  apiKey: env.VOLTAGE_API_KEY,
+  baseUrl: env.VOLTAGE_BASE_URL || 'https://voltageapi.com/v1',
+  timeout: parseInt(env.VOLTAGE_TIMEOUT || '30000'),
+  
+  // Application-specific configuration
+  organizationId: env.VOLTAGE_ORGANIZATION_ID,
+  environmentId: env.VOLTAGE_ENVIRONMENT_ID,
+  walletId: env.VOLTAGE_WALLET_ID,
+  
   validateConfig: () => {
     if (
-      !env.TEAM_ID ||
-      !env.ENVIRONMENT_ID ||
-      !env.API_KEY ||
-      !env.VOLTAGE_BACKEND_URL ||
-      !env.WALLET_ID
+      !env.VOLTAGE_API_KEY ||
+      !env.VOLTAGE_ORGANIZATION_ID ||
+      !env.VOLTAGE_ENVIRONMENT_ID ||
+      !env.VOLTAGE_WALLET_ID
     ) {
       console.error(
         "Missing required environment variables. Please check your .env file."
       );
       console.error(
-        "Required variables: TEAM_ID, ENVIRONMENT_ID, API_KEY, VOLTAGE_BACKEND_URL, WALLET_ID"
+        "Required variables: VOLTAGE_API_KEY, VOLTAGE_ORGANIZATION_ID, VOLTAGE_ENVIRONMENT_ID, VOLTAGE_WALLET_ID"
       );
       process.exit(1);
     }

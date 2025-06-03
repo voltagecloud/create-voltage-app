@@ -105,7 +105,7 @@ related to the API key you are using and the wallet you want to build for.
       environmentId,
     });
     console.log(`
-${chalk.hex("#FFC000")(`⚡️Happy hacking!`)}`);
+${chalk.hex("#FFC000")(`⚡️ Happy hacking!`)}`);
   } catch (e) {
     console.log(e.message);
     process.exit(1);

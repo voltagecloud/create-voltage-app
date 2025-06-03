@@ -1,6 +1,13 @@
 const readline = require("readline");
-const api = require("../api/voltageApi");
+const { VoltageClient } = require("voltage-api-sdk");
 const config = require("../utils/config");
+
+// Initialize the Voltage SDK client
+const client = new VoltageClient({
+  apiKey: config.apiKey,
+  baseUrl: config.baseUrl,
+  timeout: config.timeout,
+});
 
 /**
  * Waits for a keypress and then returns to the menu
@@ -44,20 +51,23 @@ function createMenu() {
   console.log("\x1b[33m%s\x1b[0m", "Menu Options:");
   console.log("1. List All Wallets");
   console.log("2. Get Wallet Details");
-  console.log("3. Get Wallet Ledger");
+  console.log("3. Get Payments");
   console.log("4. Create Bolt11 Invoice");
-  console.log("5. List All Payments");
-  console.log("6. Exit");
+  console.log("5. Create Onchain Address");
+  console.log("6. List All Payments");
+  console.log("7. Exit");
   console.log();
 
-  rl.question("\x1b[32m>\x1b[0m Enter your choice (1-6): ", async (choice) => {
+  rl.question("\x1b[32m>\x1b[0m Enter your choice (1-7): ", async (choice) => {
     console.log();
 
     switch (choice) {
       case "1":
         try {
           console.log("Fetching all wallets...");
-          const wallets = await api.getAllWallets();
+          const wallets = await client.getWallets({
+            organization_id: config.organizationId,
+          });
 
           if (wallets.length === 0) {
             console.log("No wallets found for this organization.");
@@ -95,7 +105,10 @@ function createMenu() {
         rl.question("Enter wallet ID: ", async (walletId) => {
           try {
             console.log(`Fetching wallet ${walletId}...`);
-            const wallet = await api.getWallet(walletId);
+            const wallet = await client.getWallet({
+              organization_id: config.organizationId,
+              wallet_id: walletId,
+            });
 
             console.log("\n--- Wallet Details ---");
             console.log(`ID: ${wallet.id}`);
@@ -165,62 +178,104 @@ function createMenu() {
         return;
 
       case "3":
-        rl.question("Enter wallet ID: ", async (walletId) => {
-          rl.question(
-            "Enter limit (optional, press Enter to skip): ",
-            async (limit) => {
-              try {
-                const options = {};
-                if (limit && !isNaN(parseInt(limit))) {
-                  options.limit = parseInt(limit);
-                }
+        rl.question(
+          "Enter limit (optional, press Enter to skip): ",
+          async (limit) => {
+            rl.question(
+              "Enter wallet ID filter (optional, press Enter to skip): ",
+              async (walletIdFilter) => {
+                try {
+                  const options = {};
+                  if (limit && !isNaN(parseInt(limit))) {
+                    options.limit = parseInt(limit);
+                  }
+                  if (walletIdFilter && walletIdFilter.trim()) {
+                    options.wallet_id = walletIdFilter.trim();
+                  }
 
-                console.log(`Fetching ledger for wallet ${walletId}...`);
-                const ledger = await api.getWalletLedger(walletId, options);
+                  console.log("Fetching payments...");
+                  // Note: Using direct API call until SDK adds getPayments method
+                  let url = `${config.baseUrl}/organizations/${config.organizationId}/environments/${config.environmentId}/payments`;
 
-                console.log("\n--- Wallet Ledger ---");
-                console.log(`Total Items: ${ledger.total}`);
-                console.log(`Offset: ${ledger.offset}`);
-                console.log(`Limit: ${ledger.limit}`);
+                  if (Object.keys(options).length > 0) {
+                    const queryParams = new URLSearchParams();
+                    Object.entries(options).forEach(([key, value]) => {
+                      if (value !== null && value !== undefined) {
+                        queryParams.append(key, value);
+                      }
+                    });
+                    url += `?${queryParams.toString()}`;
+                  }
 
-                if (ledger.items && ledger.items.length > 0) {
-                  console.log("\nLedger Events:");
-                  ledger.items.forEach((event, index) => {
-                    console.log(`\n  Event ${index + 1}:`);
-                    console.log(`  Type: ${event.type}`);
-                    console.log(
-                      `  Amount: ${event.amount_msats || "N/A"} msats`
-                    );
-                    console.log(`  Currency: ${event.currency}`);
-                    console.log(
-                      `  Time: ${new Date(
-                        event.effective_time
-                      ).toLocaleString()}`
-                    );
-                    console.log(`  Payment ID: ${event.payment_id}`);
-
-                    if (
-                      event.type === "held" ||
-                      event.type === "captured" ||
-                      event.type === "released"
-                    ) {
-                      console.log(`  Hold ID: ${event.hold_id}`);
-                    } else if (event.type === "credited") {
-                      console.log(`  Credit ID: ${event.credit_id}`);
-                    }
+                  const response = await fetch(url, {
+                    method: "GET",
+                    headers: {
+                      "x-api-key": config.apiKey,
+                      "Content-Type": "application/json",
+                    },
                   });
-                } else {
-                  console.log("\nNo ledger events found");
-                }
 
-                waitForKeyPress(rl);
-              } catch (error) {
-                console.error(`Failed to get ledger for wallet ${walletId}`);
-                waitForKeyPress(rl);
+                  if (!response.ok) {
+                    throw new Error(`API error: ${response.status} ${response.statusText}`);
+                  }
+
+                  const paymentsResponse = await response.json();
+
+                  console.log("\n--- Payments ---");
+                  console.log(`Total Items: ${paymentsResponse.total || 'N/A'}`);
+                  console.log(`Offset: ${paymentsResponse.offset || 0}`);
+                  console.log(`Limit: ${paymentsResponse.limit || options.limit || 10}`);
+
+                  if (paymentsResponse.items && paymentsResponse.items.length > 0) {
+                    console.log("\nPayments:");
+                    paymentsResponse.items.forEach((payment, index) => {
+                      console.log(`\n  Payment ${index + 1}:`);
+                      console.log(`  ID: ${payment.id}`);
+                      console.log(`  Status: ${payment.status}`);
+                      console.log(`  Wallet ID: ${payment.wallet_id}`);
+                      console.log(`  Currency: ${payment.currency}`);
+                      console.log(
+                        `  Amount: ${payment.amount_msats || "N/A"} msats`
+                      );
+                      console.log(`  Payment Kind: ${payment.payment_kind}`);
+                      console.log(`  Description: ${payment.description || 'N/A'}`);
+                      console.log(
+                        `  Created: ${new Date(
+                          payment.created_at
+                        ).toLocaleString()}`
+                      );
+                      console.log(
+                        `  Updated: ${new Date(
+                          payment.updated_at
+                        ).toLocaleString()}`
+                      );
+                      
+                      if (payment.data) {
+                        console.log(`  Data:`);
+                        if (payment.data.payment_request) {
+                          console.log(`    Payment Request: ${payment.data.payment_request.substring(0, 50)}...`);
+                        }
+                        if (payment.data.address) {
+                          console.log(`    Address: ${payment.data.address}`);
+                        }
+                        if (payment.data.memo) {
+                          console.log(`    Memo: ${payment.data.memo}`);
+                        }
+                      }
+                    });
+                  } else {
+                    console.log("\nNo payments found");
+                  }
+
+                  waitForKeyPress(rl);
+                } catch (error) {
+                  console.error("Failed to get payments:", error.message);
+                  waitForKeyPress(rl);
+                }
               }
-            }
-          );
-        });
+            );
+          }
+        );
         return;
 
       case "4":
@@ -239,11 +294,17 @@ function createMenu() {
                       console.log(
                         `Creating bolt11 invoice for wallet ${selectedWalletId}...`
                       );
-                      const payment = await api.createBolt11Invoice(
-                        selectedWalletId,
-                        amountMsats,
-                        description
-                      );
+                      const payment = await client.createPaymentRequest({
+                        organization_id: config.organizationId,
+                        environment_id: config.environmentId,
+                        payment: {
+                          wallet_id: selectedWalletId,
+                          currency: "btc",
+                          amount_msats: parseInt(amountMsats, 10),
+                          payment_kind: "bolt11",
+                          description: description || "Payment request",
+                        },
+                      });
 
                       console.log("\n--- Bolt11 Invoice Created ---");
                       console.log(`Payment ID: ${payment.id}`);
@@ -263,7 +324,11 @@ function createMenu() {
                         attempts++;
 
                         try {
-                          const fullPayment = await api.getPayment(payment.id);
+                          const fullPayment = await client.getPayment({
+                            organization_id: config.organizationId,
+                            environment_id: config.environmentId,
+                            payment_id: payment.id,
+                          });
 
                           if (
                             fullPayment.data &&
@@ -328,8 +393,11 @@ function createMenu() {
                                         );
                                       }
 
-                                      const updatedPayment =
-                                        await api.getPayment(payment.id);
+                                      const updatedPayment = await client.getPayment({
+                                        organization_id: config.organizationId,
+                                        environment_id: config.environmentId,
+                                        payment_id: payment.id,
+                                      });
 
                                       if (
                                         updatedPayment.status !==
@@ -436,6 +504,87 @@ function createMenu() {
         return;
 
       case "5":
+        rl.question(
+          `Enter wallet ID (default: ${config.walletId}): `,
+          async (inputWalletId) => {
+            const selectedWalletId = inputWalletId.trim() || config.walletId;
+
+            rl.question("Enter amount (in satoshis): ", async (amountSats) => {
+              rl.question(
+                "Enter description (optional, press Enter to skip): ",
+                async (description) => {
+                  try {
+                    console.log(
+                      `Creating onchain address for wallet ${selectedWalletId}...`
+                    );
+                    const payment = await client.createPaymentRequest({
+                      organization_id: config.organizationId,
+                      environment_id: config.environmentId,
+                      payment: {
+                        wallet_id: selectedWalletId,
+                        currency: "btc",
+                        payment_kind: "onchain",
+                        amount_msats: parseInt(amountSats, 10) * 1000, // Convert sats to msats
+                        description: description || "Onchain payment request",
+                      },
+                    });
+
+                    console.log("\n--- Onchain Address Created ---");
+                    console.log(`Payment ID: ${payment.id}`);
+
+                    // Poll for payment details just to get the address
+                    const pollPayment = async () => {
+                      try {
+                        const paymentDetails = await client.getPayment({
+                          organization_id: config.organizationId,
+                          environment_id: config.environmentId,
+                          payment_id: payment.id,
+                        });
+
+                        if (
+                          paymentDetails.data &&
+                          paymentDetails.data.address
+                        ) {
+                          console.log(
+                            `\nBitcoin Address: ${paymentDetails.data.address}`
+                          );
+                          console.log(`Amount: ${amountSats} sats`);
+                          if (description) {
+                            console.log(`Description: ${description}`);
+                          }
+                          waitForKeyPress(rl);
+                        } else {
+                          setTimeout(pollPayment, 1000);
+                        }
+                      } catch (error) {
+                        if (!error.message.includes("404")) {
+                          console.error(
+                            "Error getting payment details:",
+                            error.message
+                          );
+                          waitForKeyPress(rl);
+                          return;
+                        }
+                        setTimeout(pollPayment, 1000);
+                      }
+                    };
+
+                    pollPayment();
+                  } catch (error) {
+                    console.error(
+                      "Error creating onchain address:",
+                      error.message
+                    );
+                    waitForKeyPress(rl);
+                  }
+                }
+              );
+            });
+          }
+        );
+        return;
+
+      case "6":
         try {
           rl.question("Enter limit (default: 3): ", async (limit) => {
             const options = {};
@@ -446,7 +595,32 @@ function createMenu() {
             }
 
             console.log(`Fetching payments (limit: ${options.limit})...`);
-            const payments = await api.getAllPayments(options);
+            // Note: Using direct API call until SDK adds getPayments method
+            let url = `${config.baseUrl}/organizations/${config.organizationId}/environments/${config.environmentId}/payments`;
+
+            if (Object.keys(options).length > 0) {
+              const queryParams = new URLSearchParams();
+              Object.entries(options).forEach(([key, value]) => {
+                if (value !== null && value !== undefined) {
+                  queryParams.append(key, value);
+                }
+              });
+              url += `?${queryParams.toString()}`;
+            }
+
+            const response = await fetch(url, {
+              method: "GET",
+              headers: {
+                "x-api-key": config.apiKey,
+                "Content-Type": "application/json",
+              },
+            });
+
+            if (!response.ok) {
+              throw new Error(`API error: ${response.status} ${response.statusText}`);
+            }
+
+            const payments = await response.json();
 
             if (payments.items.length === 0) {
               console.log("No payments found.");
@@ -509,7 +683,7 @@ function createMenu() {
         }
         return;
 
-      case "6":
+      case "7":
         console.log("Exiting...");
         rl.close();
         return;

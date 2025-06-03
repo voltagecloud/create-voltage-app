@@ -1,0 +1,25 @@
+{
+  "name": "voltage-nodejs-manager",
+  "version": "1.0.0",
+  "description": "An interactive CLI application to manage your Voltage payment environment",
+  "main": "index.js",
+  "scripts": {
+    "start": "node --env-file=.env index.js",
+    "dev": "node --env-file=.env index.js"
+  },
+  "dependencies": {
+    "voltage-api-sdk": "^0.1.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "keywords": [
+    "voltage",
+    "bitcoin",
+    "lightning",
+    "payments",
+    "cli"
+  ],
+  "author": "Voltage",
+  "license": "MIT"
+}
