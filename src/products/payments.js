@@ -1,6 +1,6 @@
 const { handleLogin, getMacaroonsAndCert } = require("../utils/auth");
 const chalk = require("chalk");
-const { input } = require("@inquirer/prompts");
+const { input, password } = require("@inquirer/prompts");
 const select = require("@inquirer/select").default;
 const { Separator } = require("@inquirer/select");
 const apps = require("../lib/apps");
@@ -72,7 +72,7 @@ related to the API key you are using and the wallet you want to build for.
     });
 
     // Request user to input the API key
-    const apiKey = await input({ message: "Enter API key:" });
+    const apiKey = await password({ message: "Enter API key:" });
 
     const categorizedApps = apps("payments");
     const appChoices = [

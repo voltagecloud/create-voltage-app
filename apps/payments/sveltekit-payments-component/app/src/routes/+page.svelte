@@ -16,7 +16,7 @@
 			baseUrl,
 			apiKey: PUBLIC_VOLTAGE_API_KEY,
 			walletId: PUBLIC_VOLTAGE_WALLET_ID,
-			amount: 100,
+			amount: 1000,
 			currency: 'btc',
 			organizationId: PUBLIC_VOLTAGE_ORGANIZATION_ID,
 			environmentId: PUBLIC_VOLTAGE_ENVIRONMENT_ID,

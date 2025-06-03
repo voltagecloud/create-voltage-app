@@ -3,7 +3,7 @@ const chalk = require("chalk");
 
 const API_URL = "https://frontend-api.voltage.cloud";
 const AUTH_URL = "https://auth.voltage.cloud/api/v1";
-const BACKEND_URL = "https://backend.voltage.cloud/api/v1";
+const BACKEND_URL = "https://voltageapi.com/v1";
 
 class Api {
   constructor(opts) {
